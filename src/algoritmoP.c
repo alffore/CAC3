@@ -46,12 +46,10 @@ int calculoSD(void) {
             daux=dist;
             while (pr != NULL) {
              
-//printf("busca: %s  es %s\n",tipoi[t],pr->stipo_infra);
 
                 if (strcmp(tipoi[t], pr->stipo_infra) == 0) {
 
                     daux = distLR(ploc, pr);
-                    //printf("%lf\n",daux);
                     if (daux < dist) {
                         dist = daux;
                         prmin = pr;
@@ -60,7 +58,7 @@ int calculoSD(void) {
                 pr = pr->Pnext;
             }
 
-            //se inserta resultado del calculo
+
             insertaDato(ploc, prmin, dist);
         }
 
