@@ -1,4 +1,4 @@
-#include "cac2.h"
+#include "cac3.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -21,7 +21,7 @@ extern PLocalidad PLr;
 extern double RT;
 
 /**
- * @brief Esta funcion calcula la distancia entre una localidad y un recurso
+ * @brief Esta función calcula la distancia entre una localidad y un recurso
  * @return 
  */
 int calculoSD(void) {
@@ -57,7 +57,6 @@ int calculoSD(void) {
                 }
                 pr = pr->Pnext;
             }
-
 
             insertaDato(ploc, prmin, dist);
         }

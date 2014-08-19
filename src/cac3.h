@@ -5,8 +5,8 @@
  * Created on November 19, 2012, 1:39 PM
  */
 
-#ifndef CAC2_H
-#define	CAC2_H
+#ifndef CAC3_H
+#define	CAC3_H
 
 #ifdef	__cplusplus
 extern "C" {
@@ -33,7 +33,7 @@ extern "C" {
     typedef Recurso * PRecurso;
 
     /**
-     * 
+     * @brief Estructura par registrar las localidades 
      */
     typedef struct Localidad {
         int estado_id;
@@ -79,11 +79,20 @@ extern "C" {
         , "museo_esp"
     };
     
+    /**
+    * @brief Estructura para registrar de manera dinamica los tipos de recursos 
+    */
+    typedef struct TipoRec {
+        char * stipo;
+        struct TipoRec * Pnext;
+    } TipoRec;
+
+    typedef TipoRec * PTipoRec;
    
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif	/* CAC2_H */
+#endif	/* CAC3_H */
 

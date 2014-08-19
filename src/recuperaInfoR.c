@@ -6,7 +6,7 @@
  * @author AAFR
  */
 
-#include "cac2.h"
+#include "cac3.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,7 +40,7 @@ int recuperaInfoRC(char * sarchivo) {
     FILE *fh = fopen(sarchivo, "r");
     while (!feof(fh)) {
         if (fscanf(fh, "%d %d %d %lf %lf %s %d", &edo_id, &mun_id, &loc_id, &lat, &lon, stipo, &id) != 7) break;
-//printf("RECUPERADO: %d %d %d %lf %lf %s %d\n",edo_id, mun_id, loc_id, lat, lon, stipo, id);
+
         if (pr == NULL && PRr == NULL) {
             PRr = creaR(id, edo_id, mun_id, loc_id, lat, lon, stipo);
             pr = PRr;
@@ -55,7 +55,7 @@ int recuperaInfoRC(char * sarchivo) {
 }
 
 /**
- * @brief Funcion que inserta un recurso al final de la Cola de Recursos
+ * @brief Función que inserta un recurso al final de la Cola de Recursos
  * @param pr
  * @param id
  * @param estado_id
@@ -75,6 +75,7 @@ PRecurso insertaR(PRecurso pr, int id, int estado_id, int municipio_id, int loca
 }
 
 /**
+ * @brief Función que crea un nodo Recurso 
  * @param id
  * @param estado_id
  * @param municipio_id

@@ -5,12 +5,13 @@
  * Created on November 19, 2012, 1:36 PM
  */
 
-#include "cac2.h"
+#include "cac3.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 
 extern int recuperaInfoRC(char * sarchivo);
+extern int recuperaT(void);
 extern int recuperaInfoLoc(char * sarchivo);
 extern void abreArchivoSSQL(char * snomarch);
 extern void cierraArchivoSSQL(void);
@@ -18,11 +19,12 @@ extern int calculoSD(void);
 
 extern void liberaR(PRecurso pr);
 extern void liberaL(PLocalidad pr);
+extern void liberaT(PTipoRec pr);
 
 
 extern PRecurso PRr;
 extern PLocalidad PLr;
-
+extern PTipoRec PTr;
 
 
 
@@ -34,12 +36,6 @@ int main(int argc, char** argv) {
 /*    int i = 0;*/
 
     if (argc > 2) {
-/*
-        for (i = 0; i < argc; i++) {
-            printf("%ṣ\n", *(argv + i));
-        }
-*/
-
 
         
         printf("%s\n",*(argv + 1));
@@ -47,20 +43,21 @@ int main(int argc, char** argv) {
         
         printf("%s\n",*(argv + 2));
         recuperaInfoRC(*(argv + 2));
+        recuperaT();
         
         
-        abreArchivoSSQL("salida_cac2.sql");
+        abreArchivoSSQL("salida_cac3.sql");
         calculoSD();
         cierraArchivoSSQL();
 
-        
-        
+                
         liberaL(PLr);
+        liberaT(PTr);
         liberaR(PRr);
-
+        
       
     } else {
-        fprintf(stderr, "cac2  <archivo_localidades> <archivo_recursos>\n");
+        fprintf(stderr, "CAC3.exe  <archivo_localidades> <archivo_recursos>\n");
     }
 
 

@@ -16,7 +16,9 @@ OBJ= main.o \
     algoritmoP.o \
     distancias.o \
     recuperaInfoL.o \
-    recuperaInfoR.o
+    recuperaInfoR.o \
+    salidas.o \
+    tema.o
 
 
  
