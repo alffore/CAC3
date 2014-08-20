@@ -1,4 +1,4 @@
-/* 
+/**
  * @file  main.c
  * @author AAFR
  *
@@ -59,8 +59,6 @@ int main(int argc, char** argv) {
     } else {
         fprintf(stderr, "CAC3.exe  <archivo_localidades> <archivo_recursos>\n");
     }
-
-
 
 
     return (EXIT_SUCCESS);

@@ -1,3 +1,9 @@
+/**
+* @file recuperaTema.c
+* 
+* @author AAFR <alffore@gmail.com>
+*/
+
 #include "cac3.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +22,7 @@ int cuentaT;
 
 
 /**
- *
+ * @brief Función que recorre los recursos y recupera los distintos
  *
  */
 int recuperaT(void){

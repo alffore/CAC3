@@ -1,8 +1,9 @@
 /* 
- * @file  cac2.h
- * @author AAFR
+ * @file  cac3.h
+ * @author AAFR <alffore@gmail.com>
  *
  * Created on November 19, 2012, 1:39 PM
+ * Actualizado en Agosto 20, 2014 8:28 AM
  */
 
 #ifndef CAC3_H
@@ -52,32 +53,6 @@ extern "C" {
 
     typedef Localidad * PLocalidad;
 
-
-    /**
-     * 
-     */
-    static char *tipoi[20] = {
-        "museo",
-        "teatro",
-        "auditorio",
-        "galeria",
-        "libreria",
-        "zona_arqueologica",
-        "biblioteca",
-        "centro_cultural",
-        "otra_bib",
-        "fototeca",
-        "fonoteca",
-        "patrimonio_humanidad",
-        "fnme",
-        "universidad",
-        "museo_his"
-        , "museo_ant"
-        , "museo_art"
-        , "museo_arq"
-        , "museo_cyt"
-        , "museo_esp"
-    };
     
     /**
     * @brief Estructura para registrar de manera dinamica los tipos de recursos 
