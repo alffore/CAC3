@@ -28,9 +28,7 @@ extern double RT;
 int calculoSD(void) {
 
 
-    int tam_tipos = 20;
 
-    int t;
     PRecurso pr = PRr;
     PRecurso prmin = NULL;
 
