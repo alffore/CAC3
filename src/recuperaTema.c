@@ -74,9 +74,10 @@ PTipoRec insertaT(char* stipo){
  */
 PTipoRec creaT(char* stipo){
 
-	PTipoRec pr= (PTipoRec)malloc(sizeof(PTipoRec));
+	PTipoRec pr=(PTipoRec)malloc(sizeof(PTipoRec));
 
 	pr->stipo=stipo;
+	pr->Pnext=NULL;
 
 	cuentaT++;
 	return pr;

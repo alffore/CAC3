@@ -18,7 +18,7 @@ OBJ= main.o \
     recuperaInfoL.o \
     recuperaInfoR.o \
     salidas.o \
-    tema.o
+    recuperaTema.o
 
 
  
@@ -31,7 +31,6 @@ all: clean $(OBJ)
 
 %.o: $(DIR_SRC)%.c
 	$(CC) $(CFLAGS)  $<
-
 
 
 docs: borradocs

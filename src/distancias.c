@@ -31,7 +31,6 @@ double dist(Recurso p1, Recurso p2){
     
     daux+=cos(p1.lat)*sin(p1.lon)*cos(p2.lat)*sin(p2.lon);
     
-    
     daux=RT*acos(daux);
     
     return daux;
@@ -56,7 +55,6 @@ double distLR(PLocalidad ploc,PRecurso prec){
     daux+=cos(ploc->lat)*cos(ploc->lon)*cos(prec->lat)*cos(prec->lon);
     
     daux+=cos(ploc->lat)*sin(ploc->lon)*cos(prec->lat)*sin(prec->lon);
-    
     
     daux=RT*acos(daux);
     

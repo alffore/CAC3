@@ -16,12 +16,13 @@ extern int cuentaRec;
 
 extern PRecurso PRr;
 extern PLocalidad PLr;
+extern PTipoRec PTr;
 
 
 extern double RT;
 
 /**
- * @brief Esta función calcula la distancia entre una localidad y un recurso
+ * @brief Esta función calcula la distancia entre una localidad y un recurso de un cierto tipo
  * @return 
  */
 int calculoSD(void) {
@@ -38,7 +39,9 @@ int calculoSD(void) {
 
     while (ploc != NULL) {
 
-        for (t = 0; t < tam_tipos; t++) {
+        PTipoRec ptr=PTr;       
+
+        do{
 
             pr = PRr;
             prmin = NULL;
@@ -47,7 +50,7 @@ int calculoSD(void) {
             while (pr != NULL) {
              
 
-                if (strcmp(tipoi[t], pr->stipo_infra) == 0) {
+                if (strcmp(ptr->stipo, pr->stipo_infra) == 0) {
 
                     daux = distLR(ploc, pr);
                     if (daux < dist) {
@@ -59,7 +62,10 @@ int calculoSD(void) {
             }
 
             insertaDato(ploc, prmin, dist);
-        }
+
+            ptr=ptr->Pnext;
+
+        }while(ptr!=NULL);
 
         ploc = ploc->Pnext;
     }
