@@ -25,6 +25,7 @@ extern double RT;
  * @brief Esta función calcula la distancia entre una localidad y un recurso de un cierto tipo
  * @return 
  */
+ // este algoritmo se puede obtimizar con cuda
 int calculoSD(void) {
 
 

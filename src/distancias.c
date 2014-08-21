@@ -47,6 +47,7 @@ double dist(Recurso p1, Recurso p2){
  * 
  * @see Localidad
  */
+ // este calculo tambien se puede optimizar con cuda
 double distLR(PLocalidad ploc,PRecurso prec){
     double daux=0.0;
     
