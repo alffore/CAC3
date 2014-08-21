@@ -97,6 +97,7 @@ PLocalidad creaL(int estado_id, int municipio_id, int localidad_id, double lat, 
     pr->lon = M_PI * lon / 180.0;
 
     pr->poblacion = pob;
+    pr->Pnext=NULL;
 
 
     return pr;

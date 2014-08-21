@@ -1,7 +1,7 @@
 /**
  * @file salida.c
  * 
- * @author AAFR
+ * @author AAFR <alffore@gmail.com>
  */
 
 #include "cac3.h"

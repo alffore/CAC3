@@ -59,6 +59,7 @@ extern "C" {
     */
     typedef struct TipoRec {
         char * stipo;
+        
         struct TipoRec * Pnext;
     } TipoRec;
 
