@@ -22,10 +22,10 @@ extern PTipoRec PTr;
 extern double RT;
 
 /**
- * @brief Esta función calcula la distancia entre una localidad y un recurso de un cierto tipo
+ * @brief Esta función calcula la distancia entre una localidad y un recurso de un cierto tipo, determina el recurso mas cercano
  * @return 
  */
- // este algoritmo se puede obtimizar con cuda
+
 int calculoSD(void) {
 
 

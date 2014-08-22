@@ -8,7 +8,7 @@
 CC= gcc -c
 CLINKER= gcc -o
 
-CFLAGS= -O3 -Wall
+CFLAGS= -O2 -Wall
 
 LIBS= -lm
 
@@ -27,6 +27,9 @@ DIR_BIN=./bin/
 
 all: clean $(OBJ)
 	$(CLINKER) $(DIR_BIN)CAC3.exe $(OBJ) $(LIBS) $(CFLAGS)
+
+
+cuda: clean $(OBJ)
 
 
 %.o: $(DIR_SRC)%.c
