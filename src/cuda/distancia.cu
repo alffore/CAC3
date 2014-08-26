@@ -3,7 +3,8 @@
 double RT = 6378390.00;
 
 
-__global__ void distancia(const float* ploc_lon,const float* ploc_lat,const float* prec_lon,const float* prec_lat, float* distancia){
+__global__ 
+void distancia(const float* ploc_lon,const float* ploc_lat,const float* prec_lon,const float* prec_lat, float* distancia){
 
 
 int id=threadIdx.x + blockDim.x * blockIdx.x;
