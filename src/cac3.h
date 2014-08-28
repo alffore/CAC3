@@ -66,6 +66,11 @@ extern "C" {
     typedef TipoRec * PTipoRec;
    
 
+#define SALIDA_ARCHIVO "a"
+
+#define SALIDA_BD "b"
+
+
 #ifdef	__cplusplus
 }
 #endif

@@ -10,7 +10,7 @@ CLINKER= gcc -o
 
 CFLAGS= -O3 -Wall
 
-LIBS= -lm
+LIBS= -lm -lpq
 
 OBJ= main.o \
     algoritmoP.o \
@@ -18,7 +18,8 @@ OBJ= main.o \
     recuperaInfoL.o \
     recuperaInfoR.o \
     salidas.o \
-    recuperaTema.o
+    recuperaTema.o \
+    salida_DB.o
 
 
  

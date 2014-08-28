@@ -5,10 +5,11 @@
 #include <string.h>
 
 
-int calculoSD(void);
+int calculoSD(char *saltipo);
 
 extern double distLR(PLocalidad ploc, PRecurso prec);
 extern void insertaDato(PLocalidad ploc, PRecurso pr, double dist);
+extern int insertaDatoDB(PLocalidad ploc, PRecurso pr, double dist);
 
 
 extern int cuentaLoc;
@@ -25,7 +26,7 @@ extern double RT;
  * @brief Esta función calcula la distancia entre una localidad y un recurso de un cierto tipo
  * @return 
  */
-int calculoSD(void) {
+int calculoSD(char *saltipo) {
 
 
 
@@ -59,7 +60,11 @@ int calculoSD(void) {
                 pr = pr->Pnext;
             }
 
-            insertaDato(ploc, prmin, dist);
+		if(strcmp(saltipo,SALIDA_ARCHIVO)==0){
+            		insertaDato(ploc, prmin, dist);
+	    	}else if(strcmp(saltipo,SALIDA_BD)==0){
+			insertaDatoDB(ploc, prmin, dist);
+		}
 
             ptr=ptr->Pnext;
 

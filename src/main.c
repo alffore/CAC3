@@ -8,14 +8,22 @@
 #include "cac3.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 extern int recuperaInfoRC(char * sarchivo);
 extern int recuperaT(void);
 extern int recuperaInfoLoc(char * sarchivo);
+
+
+
 extern void abreArchivoSSQL(char * snomarch);
 extern void cierraArchivoSSQL(void);
-extern int calculoSD(void);
+
+extern int abreConexion(void);
+extern int cierraConexion(void);
+
+extern int calculoSD(char *saltipo);
 
 extern void liberaR(PRecurso pr);
 extern void liberaL(PLocalidad pr);
@@ -35,7 +43,7 @@ extern PTipoRec PTr;
 int main(int argc, char** argv) {
 
 
-    if (argc > 2) {
+    if (argc > 3) {
 
         
         printf("%s\n",*(argv + 1));
@@ -45,10 +53,20 @@ int main(int argc, char** argv) {
         recuperaInfoRC(*(argv + 2));
         recuperaT();
         
-        
-        abreArchivoSSQL("salida_cac3.sql");
-        calculoSD();
-        cierraArchivoSSQL();
+        if(strcmp(*(argv + 3),SALIDA_ARCHIVO)==0){
+        	abreArchivoSSQL("salida_cac3.sql");
+        	calculoSD(SALIDA_ARCHIVO);
+        	cierraArchivoSSQL();
+	}
+	
+	if(strcmp(*(argv + 3),SALIDA_BD)==0){
+	        abreConexion();
+		calculoSD(SALIDA_BD);
+		cierraConexion();
+	}
+
+
+
 
                 
         liberaL(PLr);
@@ -57,7 +75,7 @@ int main(int argc, char** argv) {
         
       
     } else {
-        fprintf(stderr, "CAC3.exe  <archivo_localidades> <archivo_recursos>\n");
+        fprintf(stderr, "CAC3.exe  <archivo_localidades> <archivo_recursos> <archivo=a>|<BD=b>\n");
     }
 
 
