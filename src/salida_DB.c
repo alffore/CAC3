@@ -2,7 +2,7 @@
 #include "cac3.h"
 
 
-const char scc[]="hostaddr=127.0.0.1 port=5432 dbnmae=nuevadbrenic user=userrenic";
+const char scc[]="hostaddr=127.0.0.1 port=5432 dbname=nuevadbrenic user=userrenic";
 
 PGconn *conn=NULL;
 PGresult *res=NULL;
@@ -24,7 +24,7 @@ int insertaDatoDB(PLocalidad ploc, PRecurso pr, double dist) {
 
     if (pr == NULL)return 1;
 
-	char squery[500];
+	char squery[1000];
 
         sprintf(squery, "INSERT INTO cac3 (estado_id,municipio_id,localidad_id,recurso,pobtot,dist,estadod_id,municipiod_id,localidadd_id,recurso_id) VALUES (%d,%d,%d,'%s',%d,%7.5lf,%d,%d,%d,%d);\n"
 		    , ploc->estado_id, ploc->municipio_id, ploc->localidad_id,pr->stipo_infra, ploc->poblacion, dist, pr->estado_id, pr->municipio_id, pr->localidad_id, pr->id);
