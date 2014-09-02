@@ -71,6 +71,8 @@ int calculoSD(void) {
 	PTipoRec pt = PTr;
 	while (pt != NULL ) {
 
+		printf("Tema: %s\n",pt->stipo);
+
 		alojaMemoriaCopiaRec(pt->stipo);
 		alojaMemoriaCR_D(h_lon_rec, h_lat_rec, h_id_rec, cuentaRecT);
 
@@ -79,7 +81,7 @@ int calculoSD(void) {
 
 
 		//imprime resultados
-		insertaRes(h_dist_rl,h_id_rl,pt->stipo);
+		//insertaRes(h_dist_rl,h_id_rl,pt->stipo);
 
 		liberaMemoriaCR_D();
 		liberaMemoriaRec();
@@ -124,7 +126,7 @@ void alojaMemoriaCopiaLoc(void) {
 }
 
 /**
- * @brief Funcion que aloja la cantida de memoria necesaria para los recursos de cierto tipo
+ * @brief Función que aloja la cantida de memoria necesaria para los recursos de cierto tipo
  */
 void alojaMemoriaCopiaRec(char *stipo) {
 
@@ -143,9 +145,9 @@ void alojaMemoriaCopiaRec(char *stipo) {
 			*(h_lon_rec + i) = (float) pr->lon;
 			*(h_lat_rec + i) = (float) pr->lat;
 			*(h_id_rec + i) = pr->id;
-			pr = pr->Pnext;
 			i++;
 		}
+		pr = pr->Pnext;
 	}
 }
 
@@ -161,6 +163,7 @@ int cuentaRecTipo(char *stipo) {
 		if (strcmp(pr->stipo_infra, stipo) == 0) {
 			cuenta++;
 		}
+		pr=pr->Pnext;
 	}
 
 	return cuenta;
@@ -184,8 +187,8 @@ void liberaMemoriaLoc(void) {
  * @brief Funcion que libera la memoria utilizada en los recursos
  */
 void liberaMemoriaRec(void) {
-	free(h_lon_rec);
-	free(h_lat_rec);
-	free(h_id_rec);
+	if(h_lon_rec!=NULL)free(h_lon_rec);
+	if(h_lat_rec!=NULL)free(h_lat_rec);
+	if(h_id_rec!=NULL)free(h_id_rec);
 }
 

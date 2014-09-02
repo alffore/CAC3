@@ -6,6 +6,8 @@
  */
 
 #include "cac3.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <cuda_runtime.h>
 
 // Alojamiento de punteros en el dispositivo
@@ -57,9 +59,11 @@ void iniciaCalculo(float *h_dist_rl, unsigned int *h_id_rl,
 	int threads = maxThreadsPerBlock;
 	int blocks = (int) (cuentaLoc / maxThreadsPerBlock) + 1;
 
+	printf("Threads: %d, Blocks: %d\n",threads,blocks);
+/*
 	calculaDK<<<blocks, threads>>>(d_lon_loc, d_lat_loc, d_lon_rec, d_lat_rec,
 			d_id_rec, d_dist_rl, d_id_rl, cuentaRecT, cuentaLoc);
-
+*/
 	//obtiene resultados
 	cudaMemcpy(h_dist_rl, d_dist_rl, sizeof(float) * cuentaLoc,
 			cudaMemcpyDeviceToHost);

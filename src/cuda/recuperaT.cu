@@ -38,6 +38,7 @@ int recuperaT(void){
 
 	}while(prc!=NULL);
 
+	printf("cuentaT: %d\n", cuentaT);
 	return cuentaT;
 }
 
