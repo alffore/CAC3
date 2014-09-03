@@ -60,10 +60,10 @@ void iniciaCalculo(float *h_dist_rl, unsigned int *h_id_rl,
 	int blocks = (int) (cuentaLoc / maxThreadsPerBlock) + 1;
 
 	printf("Threads: %d, Blocks: %d\n",threads,blocks);
-/*
+
 	calculaDK<<<blocks, threads>>>(d_lon_loc, d_lat_loc, d_lon_rec, d_lat_rec,
 			d_id_rec, d_dist_rl, d_id_rl, cuentaRecT, cuentaLoc);
-*/
+
 	//obtiene resultados
 	cudaMemcpy(h_dist_rl, d_dist_rl, sizeof(float) * cuentaLoc,
 			cudaMemcpyDeviceToHost);
@@ -150,10 +150,10 @@ __global__ void calculaDK(const float *d_lon_loc, const float *d_lat_loc,
 	*(d_dist_rl + myId) = calculaDistancia(lon, lat, *d_lon_rec, *d_lat_rec);
 	*(d_id_rl + myId) = *d_id_rec;
 
-	float daux;
+	//float daux;
 	for (unsigned int i = 1; i < cuentaRecT; i++) {
 
-		daux = calculaDistancia(lon, lat, *(d_lon_rec + i), *(d_lat_rec + i));
+		float daux = calculaDistancia(lon, lat, *(d_lon_rec + i), *(d_lat_rec + i));
 
 		if (daux < *(d_dist_rl + myId)) {
 			*(d_dist_rl + myId) = daux;
@@ -169,10 +169,10 @@ __device__ float calculaDistancia(float lon0, float lat0, float lon1,
 
 	float daux;
 
-	daux = sin(lat0) * sin(lat1);
-	daux += cos(lat0) * cos(lon0) * cos(lat1) * cos(lon1);
-	daux += cos(lat0) * sin(lon0) * cos(lat1) * sin(lon1);
-	daux = acos(daux);
+	daux = sinf(lat0) * sinf(lat1);
+	daux += cosf(lat0) * cosf(lon0) * cosf(lat1) * cosf(lon1);
+	daux += cosf(lat0) * sinf(lon0) * cosf(lat1) * sinf(lon1);
+	daux = acosf(daux);
 
 	return daux;
 

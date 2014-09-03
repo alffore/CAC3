@@ -14,7 +14,7 @@ extern PLocalidad PLr;
 extern PRecurso PRr;
 
 FILE * fh;
-double RT = 6378390.00;
+double RT = 6378.39; //radio terrestre en km
 char nombrearchivo[] = "cac4_salida.sql";
 
 void abreArchivoSSQL(char * snomarch);
@@ -35,6 +35,10 @@ void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char * stipo) {
 	for (i = 0; i < cuentaLoc; i++) {
 		insertaDato((PLr + i), obtenPRecurso(*(h_id_rl + i), stipo),
 				*(h_dist_rl + i) * RT);
+
+		if(BDEP){
+			printf("%d %d %f\n",i,*(h_id_rl + i),(double)(*(h_dist_rl + i))*RT);
+		}
 	}
 
 	cierraArchivoSSQL();

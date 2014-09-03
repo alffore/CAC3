@@ -63,6 +63,7 @@ typedef struct TipoRec {
 typedef TipoRec * PTipoRec;
 
 #define MAX_THREADS_BLOCK 512
+#define BDEP true
 
 #ifdef	__cplusplus
 }

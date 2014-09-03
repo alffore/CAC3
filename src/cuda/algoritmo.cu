@@ -81,7 +81,7 @@ int calculoSD(void) {
 
 
 		//imprime resultados
-		//insertaRes(h_dist_rl,h_id_rl,pt->stipo);
+		insertaRes(h_dist_rl,h_id_rl,pt->stipo);
 
 		liberaMemoriaCR_D();
 		liberaMemoriaRec();
@@ -144,7 +144,7 @@ void alojaMemoriaCopiaRec(char *stipo) {
 		if (strcmp(pr->stipo_infra, stipo) == 0) {
 			*(h_lon_rec + i) = (float) pr->lon;
 			*(h_lat_rec + i) = (float) pr->lat;
-			*(h_id_rec + i) = pr->id;
+			*(h_id_rec + i) =  pr->id;
 			i++;
 		}
 		pr = pr->Pnext;
