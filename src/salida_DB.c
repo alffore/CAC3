@@ -26,7 +26,7 @@ int insertaDatoDB(PLocalidad ploc, PRecurso pr, double dist) {
 
 	char squery[1000];
 
-        sprintf(squery, "INSERT INTO cac3 (estado_id,municipio_id,localidad_id,recurso,pobtot,dist,estadod_id,municipiod_id,localidadd_id,recurso_id) VALUES (%d,%d,%d,'%s',%d,%7.5lf,%d,%d,%d,%d);\n"
+        sprintf(squery, "INSERT INTO cac4 (estado_id,municipio_id,localidad_id,recurso,pobtot,dist,estadod_id,municipiod_id,localidadd_id,recurso_id) VALUES (%d,%d,%d,'%s',%d,%7.5lf,%d,%d,%d,%d);\n"
 		    , ploc->estado_id, ploc->municipio_id, ploc->localidad_id,pr->stipo_infra, ploc->poblacion, dist, pr->estado_id, pr->municipio_id, pr->localidad_id, pr->id);
 
 	return insertaQuery(squery);
@@ -42,7 +42,7 @@ int insertaDatoDB(PLocalidad ploc, PRecurso pr, double dist) {
 int insertaQuery(char* squery){
 
 
-	res=PQexec(conn,squery);
+	res=PQsendQuery(conn,squery);
 
 	if(PQresultStatus(res)!= PGRES_COMMAND_OK){
 		fprintf(stderr,"Error en la insercion del Query: %s\n", PQresultErrorMessage(res));
@@ -70,6 +70,8 @@ int abreConexion(void){
 		return 1;
 	}
 
+	PQsetnonblocking(conn, 1);
+
 
 	return 0;
 }
@@ -82,6 +84,7 @@ int abreConexion(void){
 int cierraConexion(void){
 
 	if(conn!=NULL){
+		PQflush(conn);
 		PQfinish(conn);
 	}
 
