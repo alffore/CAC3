@@ -5,7 +5,7 @@
 const char scc[]="hostaddr=127.0.0.1 port=5432 dbname=nuevadbrenic user=userrenic";
 
 PGconn *conn=NULL;
-PGresult *res=NULL;
+PGresult *pgres=NULL;
 
 
 int abreConexion(void);
@@ -42,15 +42,21 @@ int insertaDatoDB(PLocalidad ploc, PRecurso pr, double dist) {
 int insertaQuery(char* squery){
 
 
-	res=PQsendQuery(conn,squery);
+	int res=PQsendQuery(conn,squery);
 
-	if(PQresultStatus(res)!= PGRES_COMMAND_OK){
-		fprintf(stderr,"Error en la insercion del Query: %s\n", PQresultErrorMessage(res));
-		PQclear(res);
-	return 1;		
+	if(res!=1){
+		fprintf(stderr,"Error en el envio de la insercion Query: %d\n", res);		
+		return 1;		
 	}
 
-	PQclear(res);
+	pgres=PQgetResult(conn);
+	
+/*	if(pgres!=NULL){
+		printf(stderr,"Error no se pudo enviar el query esta ocupado\n");
+		return 1;
+
+	}*/
+	
 
 	return 0;
 }
@@ -91,3 +97,5 @@ int cierraConexion(void){
 
 	return 0;
 }
+
+
