@@ -18,7 +18,7 @@ extern "C" {
  */
 typedef struct Recurso {
 	char * stipo_infra;
-	int id;
+	unsigned int id;
 	double lon;
 	double lat;
 
@@ -56,6 +56,7 @@ typedef Localidad * PLocalidad;
  */
 typedef struct TipoRec {
 	char * stipo;
+	//unsigned int cuenta;
 
 	struct TipoRec * Pnext;
 } TipoRec;

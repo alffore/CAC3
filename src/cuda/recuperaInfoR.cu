@@ -15,8 +15,8 @@
 
 int recuperaInfoRC(char * sarchivo);
 void liberaR(PRecurso pr);
-PRecurso creaR(int id, int estado_id, int municipio_id, int localidad_id, double lat, double lon, char * stipo);
-PRecurso insertaR(PRecurso pr, int id, int estado_id, int municipio_id, int localidad_id, double lat, double lon, char * stipo);
+PRecurso creaR(unsigned int id, int estado_id, int municipio_id, int localidad_id, double lat, double lon, char * stipo);
+PRecurso insertaR(PRecurso pr, unsigned int id, int estado_id, int municipio_id, int localidad_id, double lat, double lon, char * stipo);
 
 
 
@@ -39,7 +39,7 @@ int recuperaInfoRC(char * sarchivo) {
 
     FILE *fh = fopen(sarchivo, "r");
     while (!feof(fh)) {
-        if (fscanf(fh, "%d %d %d %lf %lf %s %d", &edo_id, &mun_id, &loc_id, &lat, &lon, stipo, &id) != 7) break;
+        if (fscanf(fh, "%d %d %d %lf %lf %s %u", &edo_id, &mun_id, &loc_id, &lat, &lon, stipo, &id) != 7) break;
 
         if (pr == NULL && PRr == NULL) {
             PRr = creaR(id, edo_id, mun_id, loc_id, lat, lon, stipo);
@@ -66,7 +66,7 @@ int recuperaInfoRC(char * sarchivo) {
  * @param stipo
  * @return PRecurso Puntero al recurso insertado
  */
-PRecurso insertaR(PRecurso pr, int id, int estado_id, int municipio_id, int localidad_id, double lat, double lon, char * stipo) {
+PRecurso insertaR(PRecurso pr, unsigned int id, int estado_id, int municipio_id, int localidad_id, double lat, double lon, char * stipo) {
 
 
     pr->Pnext = creaR(id, estado_id, municipio_id, localidad_id, lat, lon, stipo);
@@ -85,7 +85,7 @@ PRecurso insertaR(PRecurso pr, int id, int estado_id, int municipio_id, int loca
  * @param stipo
  * @return
  */
-PRecurso creaR(int id, int estado_id, int municipio_id, int localidad_id, double lat, double lon, char * stipo) {
+PRecurso creaR(unsigned int id, int estado_id, int municipio_id, int localidad_id, double lat, double lon, char * stipo) {
 
     PRecurso pr = (PRecurso) malloc(sizeof (Recurso));
     cuentaRec++;

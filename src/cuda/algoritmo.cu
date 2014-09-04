@@ -13,6 +13,7 @@
 //coordenadas geograficas de las localidades
 float *h_lon_loc = NULL;
 float *h_lat_loc = NULL;
+unsigned int *h_id_loc = NULL;
 
 //coordenadas geograficas de los recursos
 float *h_lon_rec = NULL;
@@ -44,9 +45,7 @@ extern void liberaMemoriaRes(void);
 extern void iniciaCalculo(float *h_dist_rl, unsigned int *h_id_rl,
 		const size_t cuentaRecT);
 
-
-extern void insertaRes(float *h_dist_rl,unsigned int *h_id_rl,char *stipo);
-
+extern void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char *stipo);
 
 int calculoSD(void);
 void alojaMemoriaCopiaLoc(void);
@@ -69,22 +68,24 @@ int calculoSD(void) {
 
 	// para cada tipo de recurso se ejecuta un "kernel"
 	PTipoRec pt = PTr;
-	while (pt != NULL ) {
+	while (pt != NULL) {
 
-		printf("Tema: %s\n",pt->stipo);
+
 
 		alojaMemoriaCopiaRec(pt->stipo);
+		 //printf("Tema: %s (%u,%u)\n", pt->stipo, cuentaRecT,pt->cuenta);
+		printf("Tema: %s (%u)\n", pt->stipo, cuentaRecT);
 		alojaMemoriaCR_D(h_lon_rec, h_lat_rec, h_id_rec, cuentaRecT);
 
-		//llamada a kernel
-		iniciaCalculo(h_dist_rl,h_id_rl,cuentaRecT);
+		 //llamada a kernel
+		 iniciaCalculo(h_dist_rl,h_id_rl,cuentaRecT);
 
 
-		//imprime resultados
-		insertaRes(h_dist_rl,h_id_rl,pt->stipo);
+		 //imprime resultados
+		 insertaRes(h_dist_rl,h_id_rl,pt->stipo);
 
-		liberaMemoriaCR_D();
-		liberaMemoriaRec();
+		 liberaMemoriaCR_D();
+		 liberaMemoriaRec();
 
 		pt = pt->Pnext;
 	}
@@ -107,6 +108,7 @@ void alojaMemoriaCopiaLoc(void) {
 	int i = 0;
 	h_lon_loc = (float *) malloc(sizeof(float) * cuentaLoc);
 	h_lat_loc = (float *) malloc(sizeof(float) * cuentaLoc);
+	h_id_loc = (unsigned int *) malloc(sizeof(unsigned int) * cuentaLoc);
 
 	//alojamos memoria para los resultados en el host
 	h_id_rl = (unsigned int*) malloc(sizeof(unsigned int) * cuentaLoc);
@@ -114,10 +116,12 @@ void alojaMemoriaCopiaLoc(void) {
 
 	PLocalidad ploc = PLr;
 
-	while (ploc != NULL ) {
+	while (ploc != NULL) {
 
 		*(h_lon_loc + i) = (float) ploc->lon;
 		*(h_lat_loc + i) = (float) ploc->lat;
+		*(h_id_loc + i) = ploc->localidad_id + 1000 * ploc->municipio_id
+				+ 1000000 * ploc->estado_id;
 
 		ploc = ploc->Pnext;
 		i++;
@@ -126,7 +130,7 @@ void alojaMemoriaCopiaLoc(void) {
 }
 
 /**
- * @brief Función que aloja la cantida de memoria necesaria para los recursos de cierto tipo
+ * @brief Función que aloja la cantidad de memoria necesaria para los recursos de cierto tipo
  */
 void alojaMemoriaCopiaRec(char *stipo) {
 
@@ -140,11 +144,11 @@ void alojaMemoriaCopiaRec(char *stipo) {
 	h_id_rec = (unsigned int *) malloc(sizeof(unsigned int) * cuentaRecT);
 
 	PRecurso pr = PRr;
-	while (pr != NULL ) {
+	while (pr != NULL) {
 		if (strcmp(pr->stipo_infra, stipo) == 0) {
 			*(h_lon_rec + i) = (float) pr->lon;
 			*(h_lat_rec + i) = (float) pr->lat;
-			*(h_id_rec + i) =  pr->id;
+			*(h_id_rec + i) = pr->id;
 			i++;
 		}
 		pr = pr->Pnext;
@@ -159,23 +163,24 @@ int cuentaRecTipo(char *stipo) {
 	int cuenta = 0;
 
 	PRecurso pr = PRr;
-	while (pr != NULL ) {
+	while (pr != NULL) {
 		if (strcmp(pr->stipo_infra, stipo) == 0) {
 			cuenta++;
 		}
-		pr=pr->Pnext;
+		pr = pr->Pnext;
 	}
 
 	return cuenta;
 }
 
 /**
- * @brief Funcion que  libera la memoria asociada a las localidadess y la utilizada en los calculos asi como los resultados
+ * @brief Función que  libera la memoria asociada a las localidadess y la utilizada en los calculos asi como los resultados
  */
 void liberaMemoriaLoc(void) {
 
 	free(h_lon_loc);
 	free(h_lat_loc);
+	free(h_id_loc);
 
 	//libera memoria local de resultados
 	free(h_id_rl);
@@ -187,8 +192,11 @@ void liberaMemoriaLoc(void) {
  * @brief Funcion que libera la memoria utilizada en los recursos
  */
 void liberaMemoriaRec(void) {
-	if(h_lon_rec!=NULL)free(h_lon_rec);
-	if(h_lat_rec!=NULL)free(h_lat_rec);
-	if(h_id_rec!=NULL)free(h_id_rec);
+	if (h_lon_rec != NULL)
+		free(h_lon_rec);
+	if (h_lat_rec != NULL)
+		free(h_lat_rec);
+	if (h_id_rec != NULL)
+		free(h_id_rec);
 }
 
