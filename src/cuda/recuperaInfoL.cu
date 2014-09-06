@@ -48,7 +48,7 @@ int recuperaInfoLoc(char * sarchivo) {
             pr = insertaL(pr, edo_id, mun_id, loc_id, lat, lon, pob);
         }
 
-
+if(cuentaLoc==5000)break;
 
     }
     printf("cuentaLoc: %d\n", cuentaLoc);
@@ -99,6 +99,7 @@ PLocalidad creaL(int estado_id, int municipio_id, int localidad_id, double lat, 
     pr->poblacion = pob;
     pr->Pnext=NULL;
 
+    pr->id_loc=pr->localidad_id + 1000 * pr->municipio_id+ 1000000 * pr->estado_id;
 
     return pr;
 

@@ -35,17 +35,17 @@ int recuperaInfoRC(char * sarchivo) {
 
     int id, edo_id, mun_id, loc_id;
     double lat, lon;
-    char stipo[20];
+    char stipo_infra[20];
 
     FILE *fh = fopen(sarchivo, "r");
     while (!feof(fh)) {
-        if (fscanf(fh, "%d %d %d %lf %lf %s %u", &edo_id, &mun_id, &loc_id, &lat, &lon, stipo, &id) != 7) break;
+        if (fscanf(fh, "%d %d %d %lf %lf %s %u", &edo_id, &mun_id, &loc_id, &lat, &lon, stipo_infra, &id) != 7) break;
 
         if (pr == NULL && PRr == NULL) {
-            PRr = creaR(id, edo_id, mun_id, loc_id, lat, lon, stipo);
+            PRr = creaR(id, edo_id, mun_id, loc_id, lat, lon, stipo_infra);
             pr = PRr;
         } else {
-            pr = insertaR(pr, id, edo_id, mun_id, loc_id, lat, lon, stipo);
+            pr = insertaR(pr, id, edo_id, mun_id, loc_id, lat, lon, stipo_infra);
         }
 
     }

@@ -59,7 +59,7 @@ PTipoRec insertaT(char* stipo){
 
 	while(ptr!=NULL){
 
-		if(strcmp(ptr->stipo,stipo)==0){
+		if(strcmp(ptr->stipo_infra,stipo)==0){
 			//ptr->cuenta++;
 			cuenta++;
 		}
@@ -84,7 +84,7 @@ PTipoRec creaT(char* stipo){
 
 	PTipoRec pr=(PTipoRec)malloc(sizeof(PTipoRec));
 
-	pr->stipo=stipo;
+	pr->stipo_infra=stipo;
 	//pr->cuenta=1;
 	pr->Pnext=NULL;
 

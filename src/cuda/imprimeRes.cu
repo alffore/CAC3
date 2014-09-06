@@ -13,15 +13,19 @@ extern int cuentaLoc;
 extern PLocalidad PLr;
 extern PRecurso PRr;
 
+extern unsigned int *h_id_loc;
+
+
 FILE * fh;
 double RT = 6378.39; //radio terrestre en km
-char nombrearchivo[] = "cac4_salida.sql";
+
 
 void abreArchivoSSQL(char * snomarch);
 void cierraArchivoSSQL(void);
 void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char *stipo);
 
 PRecurso obtenPRecurso(int id, char* stipo);
+PLocalidad obtenPLocalidad(int id_loc);
 void insertaDato(PLocalidad ploc, PRecurso pr, double dist);
 
 /**
@@ -29,19 +33,19 @@ void insertaDato(PLocalidad ploc, PRecurso pr, double dist);
  */
 void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char * stipo) {
 
-	abreArchivoSSQL(nombrearchivo);
+
 	int i = 0;
 
 	for (i = 0; i < cuentaLoc; i++) {
-		insertaDato((PLr + i), obtenPRecurso(*(h_id_rl + i), stipo),
+		insertaDato(obtenPLocalidad(*(h_id_loc+i)), obtenPRecurso(*(h_id_rl + i), stipo),
 				*(h_dist_rl + i) * RT);
 
 		if(BDEP){
-			printf("%d %d %f\n",i,*(h_id_rl + i),(double)(*(h_dist_rl + i))*RT);
+			//printf("%d %d %f\n",i,*(h_id_rl + i),(double)(*(h_dist_rl + i))*RT);
 		}
 	}
 
-	cierraArchivoSSQL();
+
 }
 
 PRecurso obtenPRecurso(int id, char* stipo) {
@@ -57,6 +61,21 @@ PRecurso obtenPRecurso(int id, char* stipo) {
 	}
 	return NULL;
 }
+
+PLocalidad obtenPLocalidad(int id_loc){
+
+	PLocalidad pl=PLr;
+
+	while(pl!=NULL){
+		if(pl->id_loc==id_loc){
+			return pl;
+		}
+		pl = pl->Pnext;
+	}
+
+	return NULL;
+}
+
 
 /**
  *
@@ -82,7 +101,7 @@ void cierraArchivoSSQL(void) {
  */
 void insertaDato(PLocalidad ploc, PRecurso pr, double dist) {
 
-	if (pr == NULL)
+	if (pr == NULL || ploc == NULL)
 		return;
 
 	fprintf(fh,

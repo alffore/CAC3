@@ -47,6 +47,8 @@ typedef struct Localidad {
 
 	struct Localidad * Pnext;
 
+	int id_loc;
+
 } Localidad;
 
 typedef Localidad * PLocalidad;
@@ -55,7 +57,7 @@ typedef Localidad * PLocalidad;
  * @brief Estructura para registrar de manera dinamica los tipos de recursos
  */
 typedef struct TipoRec {
-	char * stipo;
+	char * stipo_infra;
 	//unsigned int cuenta;
 
 	struct TipoRec * Pnext;

@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cuda_runtime.h>
+#include "utils.h"
 
 // Alojamiento de punteros en el dispositivo
 
@@ -63,11 +64,13 @@ void iniciaCalculo(float *h_dist_rl, unsigned int *h_id_rl,
 	int threads = maxThreadsPerBlock;
 	int blocks = (int) (cuentaLoc / maxThreadsPerBlock) + 1;
 
-	printf("Threads: %d, Blocks: %d\n",threads,blocks);
+	if(BDEP)printf("Threads: %d, Blocks: %d\n",threads,blocks);
 
 	calculaDK<<<blocks, threads>>>(d_lon_loc, d_lat_loc, d_lon_rec, d_lat_rec,
 			d_id_rec, d_dist_rl, d_id_rl, cuentaRecT, cuentaLoc);
 
+	cudaDeviceSynchronize();
+	checkCudaErrors(cudaGetLastError());
 
 
 	//obtiene resultados
@@ -154,8 +157,6 @@ __global__ void calculaDK(const float *d_lon_loc, const float *d_lat_loc,
 	if (myId > cuentaLoc)
 		return;
 
-
-
 	//inicializacion arranque de kernel
 	*(d_dist_rl + myId) = calculaDistancia(*(d_lon_loc + myId), *(d_lat_loc + myId), *d_lon_rec, *d_lat_rec);
 	*(d_id_rl + myId) = *d_id_rec;
@@ -180,9 +181,8 @@ __global__ void calculaDK(const float *d_lon_loc, const float *d_lat_loc,
 __device__ float calculaDistancia(float lon0, float lat0, float lon1,
 		float lat1) {
 
-	float daux;
 
-	daux = sinf(lat0) * sinf(lat1);
+	 float daux = sinf(lat0) * sinf(lat1);
 	daux += cosf(lat0) * cosf(lon0) * cosf(lat1) * cosf(lon1);
 	daux += cosf(lat0) * sinf(lon0) * cosf(lat1) * sinf(lon1);
 	daux = acosf(daux);

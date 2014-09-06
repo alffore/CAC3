@@ -6,9 +6,14 @@
  */
 
 #include "cac3.h"
+#include "utils.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+
+
+#include <cuda.h>
 
 //coordenadas geograficas de las localidades
 float *h_lon_loc = NULL;
@@ -45,12 +50,20 @@ extern void liberaMemoriaRes(void);
 extern void iniciaCalculo(float *h_dist_rl, unsigned int *h_id_rl,
 		const size_t cuentaRecT);
 
+
+
+char nombrearchivo[] = "cac4_salida.sql";
+extern void abreArchivoSSQL(char * snomarch);
+extern void cierraArchivoSSQL(void);
+
 extern void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char *stipo);
 
 int calculoSD(void);
 void alojaMemoriaCopiaLoc(void);
+void alojaMemoriaCopiaLoc_v2(void);
 void alojaMemoriaCopiaRec(char* stipo);
 void liberaMemoriaLoc(void);
+void liberaMemoriaLoc_v2(void);
 void liberaMemoriaRec(void);
 int cuentaRecTipo(char *stipo);
 
@@ -59,8 +72,12 @@ int cuentaRecTipo(char *stipo);
  */
 int calculoSD(void) {
 
+
+	checkCudaErrors(cudaSetDevice(0));
+	cudaDeviceReset();
+
 	//aloja la memoria del host
-	alojaMemoriaCopiaLoc();
+	alojaMemoriaCopiaLoc_v2();
 
 	//aloja y copia la memoria al dispositivo
 	alojaMemoriaCL_D(h_lon_loc, h_lat_loc);
@@ -68,13 +85,14 @@ int calculoSD(void) {
 
 	// para cada tipo de recurso se ejecuta un "kernel"
 	PTipoRec pt = PTr;
+
+	abreArchivoSSQL(nombrearchivo);
 	while (pt != NULL) {
 
+		alojaMemoriaCopiaRec(pt->stipo_infra);
 
+		if(BDEP)printf("Tema: %s (%u)\n", pt->stipo_infra, cuentaRecT);
 
-		alojaMemoriaCopiaRec(pt->stipo);
-		 //printf("Tema: %s (%u,%u)\n", pt->stipo, cuentaRecT,pt->cuenta);
-		printf("Tema: %s (%u)\n", pt->stipo, cuentaRecT);
 		alojaMemoriaCR_D(h_lon_rec, h_lat_rec, h_id_rec, cuentaRecT);
 
 		 //llamada a kernel
@@ -82,26 +100,27 @@ int calculoSD(void) {
 
 
 		 //imprime resultados
-		 insertaRes(h_dist_rl,h_id_rl,pt->stipo);
+		 insertaRes(h_dist_rl,h_id_rl,pt->stipo_infra);
 
 		 liberaMemoriaCR_D();
 		 liberaMemoriaRec();
 
 		pt = pt->Pnext;
 	}
+	cierraArchivoSSQL();
 
 	//liberamos memoria en el device
 	liberaMemoriaRes();
 	liberaMemoriaCL_D();
 
 	//liberamos la memoria empleada host
-	liberaMemoriaLoc();
-
+	liberaMemoriaLoc_v2();
+	cudaDeviceReset();
 	return 0;
 }
 
 /**
- * @brief Funcion que aloja la memoria necesaria para las coordenadas de las localidades, distancia e id del recurso seleccionado
+ * @brief Función que aloja la memoria necesaria para las coordenadas de las localidades, distancia e id del recurso seleccionado
  */
 void alojaMemoriaCopiaLoc(void) {
 
@@ -120,9 +139,34 @@ void alojaMemoriaCopiaLoc(void) {
 
 		*(h_lon_loc + i) = (float) ploc->lon;
 		*(h_lat_loc + i) = (float) ploc->lat;
-		*(h_id_loc + i) = ploc->localidad_id + 1000 * ploc->municipio_id
-				+ 1000000 * ploc->estado_id;
+		*(h_id_loc + i) = ploc->id_loc;
+		ploc = ploc->Pnext;
+		i++;
+	}
 
+}
+
+void alojaMemoriaCopiaLoc_v2(void) {
+
+	int i = 0;
+
+
+	cudaHostAlloc((void**) &h_lon_loc,sizeof(float) * cuentaLoc,cudaHostAllocDefault);
+	cudaHostAlloc((void**) &h_lat_loc,sizeof(float) * cuentaLoc,cudaHostAllocDefault);
+
+	h_id_loc = (unsigned int *) malloc(sizeof(unsigned int) * cuentaLoc);
+
+	//alojamos memoria para los resultados en el host
+	h_id_rl = (unsigned int*) malloc(sizeof(unsigned int) * cuentaLoc);
+	h_dist_rl = (float *) malloc(sizeof(float) * cuentaLoc);
+
+	PLocalidad ploc = PLr;
+
+	while (ploc != NULL) {
+
+		*(h_lon_loc + i) = (float) ploc->lon;
+		*(h_lat_loc + i) = (float) ploc->lat;
+		*(h_id_loc + i) = ploc->id_loc;
 		ploc = ploc->Pnext;
 		i++;
 	}
@@ -174,12 +218,27 @@ int cuentaRecTipo(char *stipo) {
 }
 
 /**
- * @brief Función que  libera la memoria asociada a las localidadess y la utilizada en los calculos asi como los resultados
+ * @brief Función que libera la memoria asociada a las localidadess y la utilizada en los calculos asi como los resultados
  */
 void liberaMemoriaLoc(void) {
 
 	free(h_lon_loc);
 	free(h_lat_loc);
+	free(h_id_loc);
+
+	//libera memoria local de resultados
+	free(h_id_rl);
+	free(h_dist_rl);
+
+}
+
+void liberaMemoriaLoc_v2(void) {
+
+
+
+	cudaFreeHost(h_lon_loc);
+	cudaFreeHost(h_lat_loc);
+
 	free(h_id_loc);
 
 	//libera memoria local de resultados
