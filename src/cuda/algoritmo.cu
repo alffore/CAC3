@@ -11,8 +11,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-
 #include <cuda.h>
 
 //coordenadas geograficas de las localidades
@@ -50,13 +48,16 @@ extern void liberaMemoriaRes(void);
 extern void iniciaCalculo(float *h_dist_rl, unsigned int *h_id_rl,
 		const size_t cuentaRecT);
 
-
-
 char nombrearchivo[] = "cac4_salida.sql";
 extern void abreArchivoSSQL(char * snomarch);
 extern void cierraArchivoSSQL(void);
 
 extern void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char *stipo);
+
+
+//rutina para chequeo de memoria
+extern void memoriaGPUUso(char * smensaje);
+
 
 int calculoSD(void);
 void alojaMemoriaCopiaLoc(void);
@@ -72,7 +73,6 @@ int cuentaRecTipo(char *stipo);
  */
 int calculoSD(void) {
 
-
 	checkCudaErrors(cudaSetDevice(0));
 	cudaDeviceReset();
 
@@ -86,28 +86,33 @@ int calculoSD(void) {
 	// para cada tipo de recurso se ejecuta un "kernel"
 	PTipoRec pt = PTr;
 
+	//checamos memoria antes de ejecucion de kernel
+	if(BDEP)memoriaGPUUso("memoria antes de kernels");
+
 	abreArchivoSSQL(nombrearchivo);
 	while (pt != NULL) {
 
 		alojaMemoriaCopiaRec(pt->stipo_infra);
 
-		if(BDEP)printf("Tema: %s (%u)\n", pt->stipo_infra, cuentaRecT);
+		if (BDEP)
+			printf("Tema: %s (%u)\n", pt->stipo_infra, cuentaRecT);
 
 		alojaMemoriaCR_D(h_lon_rec, h_lat_rec, h_id_rec, cuentaRecT);
 
-		 //llamada a kernel
-		 iniciaCalculo(h_dist_rl,h_id_rl,cuentaRecT);
+		//llamada a kernel
+		iniciaCalculo(h_dist_rl, h_id_rl, cuentaRecT);
 
+		//imprime resultados
+		insertaRes(h_dist_rl, h_id_rl, pt->stipo_infra);
 
-		 //imprime resultados
-		 insertaRes(h_dist_rl,h_id_rl,pt->stipo_infra);
-
-		 liberaMemoriaCR_D();
-		 liberaMemoriaRec();
+		liberaMemoriaCR_D();
+		liberaMemoriaRec();
 
 		pt = pt->Pnext;
 	}
 	cierraArchivoSSQL();
+
+	if(BDEP)memoriaGPUUso("memoria despues de kernels");
 
 	//liberamos memoria en el device
 	liberaMemoriaRes();
@@ -115,6 +120,7 @@ int calculoSD(void) {
 
 	//liberamos la memoria empleada host
 	liberaMemoriaLoc_v2();
+
 	cudaDeviceReset();
 	return 0;
 }
@@ -150,9 +156,10 @@ void alojaMemoriaCopiaLoc_v2(void) {
 
 	int i = 0;
 
-
-	cudaHostAlloc((void**) &h_lon_loc,sizeof(float) * cuentaLoc,cudaHostAllocDefault);
-	cudaHostAlloc((void**) &h_lat_loc,sizeof(float) * cuentaLoc,cudaHostAllocDefault);
+	cudaHostAlloc((void**) &h_lon_loc, sizeof(float) * cuentaLoc,
+			cudaHostAllocDefault);
+	cudaHostAlloc((void**) &h_lat_loc, sizeof(float) * cuentaLoc,
+			cudaHostAllocDefault);
 
 	h_id_loc = (unsigned int *) malloc(sizeof(unsigned int) * cuentaLoc);
 
@@ -233,8 +240,6 @@ void liberaMemoriaLoc(void) {
 }
 
 void liberaMemoriaLoc_v2(void) {
-
-
 
 	cudaFreeHost(h_lon_loc);
 	cudaFreeHost(h_lat_loc);
