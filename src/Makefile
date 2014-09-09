@@ -17,7 +17,8 @@ OBJ= main.o \
 	imprimeRes.o \
 	recuperaInfoL.o \
 	recuperaInfoR.o \
-	recuperaT.o
+	recuperaT.o \
+	utiles.o
 	 
 DIR_SRC=./cuda/
 DIR_BIN=./bin/

@@ -66,11 +66,11 @@ void iniciaCalculo(float *h_dist_rl, unsigned int *h_id_rl,
 
 	if(BDEP)printf("Threads: %d, Blocks: %d\n",threads,blocks);
 
-	calculaDK<<<blocks, threads>>>(d_lon_loc, d_lat_loc, d_lon_rec, d_lat_rec,
+	/*calculaDK<<<blocks, threads>>>(d_lon_loc, d_lat_loc, d_lon_rec, d_lat_rec,
 			d_id_rec, d_dist_rl, d_id_rl, cuentaRecT, cuentaLoc);
 
 	cudaDeviceSynchronize();
-	checkCudaErrors(cudaGetLastError());
+	checkCudaErrors(cudaGetLastError());*/
 
 
 	//obtiene resultados

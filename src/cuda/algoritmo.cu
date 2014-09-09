@@ -103,7 +103,7 @@ int calculoSD(void) {
 		iniciaCalculo(h_dist_rl, h_id_rl, cuentaRecT);
 
 		//imprime resultados
-		insertaRes(h_dist_rl, h_id_rl, pt->stipo_infra);
+		//insertaRes(h_dist_rl, h_id_rl, pt->stipo_infra);
 
 		liberaMemoriaCR_D();
 		liberaMemoriaRec();
