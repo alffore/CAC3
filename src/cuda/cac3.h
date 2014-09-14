@@ -13,6 +13,10 @@
 extern "C" {
 #endif
 
+#define MAX_THREADS_BLOCK 512
+#define BDEP true
+#define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
+
 /**
  * @brief Estructura que registra un recuro y sus caracteristicas
  */
@@ -30,7 +34,7 @@ typedef struct Recurso {
 
 } Recurso;
 
-typedef Recurso * PRecurso;
+typedef Recurso* PRecurso;
 
 /**
  * @brief Estructura par registrar las localidades
@@ -51,7 +55,7 @@ typedef struct Localidad {
 
 } Localidad;
 
-typedef Localidad * PLocalidad;
+typedef Localidad* PLocalidad;
 
 /**
  * @brief Estructura para registrar de manera dinamica los tipos de recursos
@@ -63,10 +67,19 @@ typedef struct TipoRec {
 	struct TipoRec * Pnext;
 } TipoRec;
 
-typedef TipoRec * PTipoRec;
+typedef TipoRec* PTipoRec;
 
-#define MAX_THREADS_BLOCK 512
-#define BDEP true
+/**
+ * @brief Estructura para
+ */
+typedef struct RecM{
+	int id;
+	float lat;
+	float lon;
+}RecM;
+
+typedef RecM* PRecM;
+
 
 #ifdef	__cplusplus
 }

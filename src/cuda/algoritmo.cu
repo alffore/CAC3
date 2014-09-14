@@ -83,6 +83,8 @@ int calculoSD(void) {
 	alojaMemoriaCL_D(h_lon_loc, h_lat_loc);
 	alojaMemoriaRes();
 
+	printf("tam PrecM: %d\n",sizeof(RecM));
+
 	// para cada tipo de recurso se ejecuta un "kernel"
 	PTipoRec pt = PTr;
 
@@ -103,7 +105,7 @@ int calculoSD(void) {
 		iniciaCalculo(h_dist_rl, h_id_rl, cuentaRecT);
 
 		//imprime resultados
-		//insertaRes(h_dist_rl, h_id_rl, pt->stipo_infra);
+		insertaRes(h_dist_rl, h_id_rl, pt->stipo_infra);
 
 		liberaMemoriaCR_D();
 		liberaMemoriaRec();
