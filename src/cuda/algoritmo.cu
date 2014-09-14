@@ -75,6 +75,7 @@ int calculoSD(void) {
 
 	checkCudaErrors(cudaSetDevice(0));
 	cudaDeviceReset();
+	if(BDEP)memoriaGPUUso("memoria antes de todo");
 
 	//aloja la memoria del host
 	alojaMemoriaCopiaLoc_v2();
@@ -88,8 +89,7 @@ int calculoSD(void) {
 	// para cada tipo de recurso se ejecuta un "kernel"
 	PTipoRec pt = PTr;
 
-	//checamos memoria antes de ejecucion de kernel
-	if(BDEP)memoriaGPUUso("memoria antes de kernels");
+
 
 	abreArchivoSSQL(nombrearchivo);
 	while (pt != NULL) {
@@ -100,6 +100,10 @@ int calculoSD(void) {
 			printf("Tema: %s (%u)\n", pt->stipo_infra, cuentaRecT);
 
 		alojaMemoriaCR_D(h_lon_rec, h_lat_rec, h_id_rec, cuentaRecT);
+
+		//checamos memoria antes de ejecucion de kernel
+			if(BDEP)memoriaGPUUso("memoria antes de kernels");
+
 
 		//llamada a kernel
 		iniciaCalculo(h_dist_rl, h_id_rl, cuentaRecT);
