@@ -14,6 +14,8 @@ extern "C" {
 #endif
 
 #define MAX_THREADS_BLOCK 512
+#define THREADS 64
+#define MAX_PREC 500
 #define BDEP true
 #define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
 

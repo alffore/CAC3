@@ -17,7 +17,7 @@ extern unsigned int *h_id_loc;
 
 
 FILE * fh;
-double RT = 6378.39; //radio terrestre promedio en km
+const double RT = 6378.39; //radio terrestre promedio en km
 
 
 void abreArchivoSSQL(char * snomarch);
@@ -48,6 +48,9 @@ void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char * stipo) {
 
 }
 
+/**
+ *
+ */
 PRecurso obtenPRecurso(int id, char* stipo) {
 	PRecurso pr = PRr;
 
@@ -62,6 +65,9 @@ PRecurso obtenPRecurso(int id, char* stipo) {
 	return NULL;
 }
 
+/**
+ *
+ */
 PLocalidad obtenPLocalidad(int id_loc){
 
 	PLocalidad pl=PLr;

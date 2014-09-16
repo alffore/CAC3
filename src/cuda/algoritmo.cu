@@ -38,15 +38,18 @@ extern PRecurso PRr;
 extern PTipoRec PTr;
 
 //funciones de interfaz con GPU
-extern void alojaMemoriaCL_D(float* h_lon_loc, float* h_lat_loc);
+extern void alojaMemoriaCLyRes_D(float* h_lon_loc, float* h_lat_loc,float* h_dist_rl);
 extern void alojaMemoriaCR_D(float* h_lon_rec, float* h_lat_rec,
 		unsigned int *h_id_rec, size_t cuentaRecT);
-extern void alojaMemoriaRes(void);
-extern void liberaMemoriaCL_D(void);
+
+extern void liberaMemoriaCLyRes_D(void);
 extern void liberaMemoriaCR_D(void);
-extern void liberaMemoriaRes(void);
+
 
 extern void iniciaCalculo(float *h_dist_rl, unsigned int *h_id_rl,
+		const size_t cuentaRecT);
+
+extern void iniciaCalculo_v2(float *h_dist_rl, unsigned int *h_id_rl,
 		const size_t cuentaRecT);
 
 char nombrearchivo[] = "cac4_salida.sql";
@@ -81,8 +84,8 @@ int calculoSD(void) {
 	alojaMemoriaCopiaLoc_v2();
 
 	//aloja y copia la memoria al dispositivo
-	alojaMemoriaCL_D(h_lon_loc, h_lat_loc);
-	alojaMemoriaRes();
+	alojaMemoriaCLyRes_D(h_lon_loc, h_lat_loc,h_dist_rl);
+
 
 	if (BDEP)
 		printf("tam PrecM: %ld\n", sizeof(RecM));
@@ -105,7 +108,8 @@ int calculoSD(void) {
 			memoriaGPUUso("memoria antes de kernels");
 
 		//llamada a kernel
-		iniciaCalculo(h_dist_rl, h_id_rl, cuentaRecT);
+		//iniciaCalculo(h_dist_rl, h_id_rl, cuentaRecT);
+		iniciaCalculo_v2(h_dist_rl, h_id_rl, cuentaRecT);
 
 		//imprime resultados
 		insertaRes(h_dist_rl, h_id_rl, pt->stipo_infra);
@@ -121,8 +125,7 @@ int calculoSD(void) {
 		memoriaGPUUso("memoria despues de kernels");
 
 	//liberamos memoria en el device
-	liberaMemoriaRes();
-	liberaMemoriaCL_D();
+	liberaMemoriaCLyRes_D();
 
 	//liberamos la memoria empleada host
 	liberaMemoriaLoc_v2();
@@ -151,8 +154,8 @@ void alojaMemoriaCopiaLoc_v2(void) {
 	h_id_rl = (unsigned int*) malloc(sizeof(unsigned int) * cuentaLoc);
 	h_dist_rl = (float *) malloc(sizeof(float) * cuentaLoc);
 
-	for (i = 0; i < cuentaLoc; i++) {
-		*(h_dist_rl + i) = 100.0f;
+	for (int j = 0; j < cuentaLoc; j++) {
+		*(h_dist_rl + j) = 5;
 	}
 
 	PLocalidad ploc = PLr;

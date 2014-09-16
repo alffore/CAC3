@@ -48,7 +48,7 @@ int recuperaInfoLoc(char * sarchivo) {
             pr = insertaL(pr, edo_id, mun_id, loc_id, lat, lon, pob);
         }
 
-if(cuentaLoc==300)break;
+if(cuentaLoc==500)break;
 
     }
     printf("cuentaLoc: %d\n", cuentaLoc);
