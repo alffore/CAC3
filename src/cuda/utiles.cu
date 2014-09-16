@@ -12,14 +12,14 @@
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>
 
-void memoriaGPUUso(char * smensaje);
+void memoriaGPUUso(const char * smensaje);
 
 /**
  *
  *
  * @see https://devtalk.nvidia.com/default/topic/487541/best-way-to-report-memory-consumption-in-cuda-/
  */
-void memoriaGPUUso(char * smensaje) {
+void memoriaGPUUso(const char * smensaje) {
 	// show memory usage of GPU
 
 	cudaError_t cuda_status;

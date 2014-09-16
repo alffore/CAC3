@@ -55,16 +55,14 @@ extern void cierraArchivoSSQL(void);
 
 extern void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char *stipo);
 
-
 //rutina para chequeo de memoria
-extern void memoriaGPUUso(char * smensaje);
-
+extern void memoriaGPUUso(const char * smensaje);
 
 int calculoSD(void);
-void alojaMemoriaCopiaLoc(void);
+
 void alojaMemoriaCopiaLoc_v2(void);
 void alojaMemoriaCopiaRec(char* stipo);
-void liberaMemoriaLoc(void);
+
 void liberaMemoriaLoc_v2(void);
 void liberaMemoriaRec(void);
 int cuentaRecTipo(char *stipo);
@@ -76,7 +74,8 @@ int calculoSD(void) {
 
 	checkCudaErrors(cudaSetDevice(0));
 	cudaDeviceReset();
-	if(BDEP)memoriaGPUUso("memoria antes de todo");
+	if (BDEP)
+		memoriaGPUUso("memoria antes de todo");
 
 	//aloja la memoria del host
 	alojaMemoriaCopiaLoc_v2();
@@ -85,12 +84,11 @@ int calculoSD(void) {
 	alojaMemoriaCL_D(h_lon_loc, h_lat_loc);
 	alojaMemoriaRes();
 
-	if(BDEP)printf("tam PrecM: %d\n",sizeof(RecM));
+	if (BDEP)
+		printf("tam PrecM: %ld\n", sizeof(RecM));
 
 	// para cada tipo de recurso se ejecuta un "kernel"
 	PTipoRec pt = PTr;
-
-
 
 	abreArchivoSSQL(nombrearchivo);
 	while (pt != NULL) {
@@ -103,8 +101,8 @@ int calculoSD(void) {
 		alojaMemoriaCR_D(h_lon_rec, h_lat_rec, h_id_rec, cuentaRecT);
 
 		//checamos memoria antes de ejecucion de kernel
-			if(BDEP)memoriaGPUUso("memoria antes de kernels");
-
+		if (BDEP)
+			memoriaGPUUso("memoria antes de kernels");
 
 		//llamada a kernel
 		iniciaCalculo(h_dist_rl, h_id_rl, cuentaRecT);
@@ -119,7 +117,8 @@ int calculoSD(void) {
 	}
 	cierraArchivoSSQL();
 
-	if(BDEP)memoriaGPUUso("memoria despues de kernels");
+	if (BDEP)
+		memoriaGPUUso("memoria despues de kernels");
 
 	//liberamos memoria en el device
 	liberaMemoriaRes();
@@ -134,31 +133,8 @@ int calculoSD(void) {
 
 /**
  * @brief Función que aloja la memoria necesaria para las coordenadas de las localidades, distancia e id del recurso seleccionado
- * @deprecate
+ *
  */
-void alojaMemoriaCopiaLoc(void) {
-
-	int i = 0;
-	h_lon_loc = (float *) malloc(sizeof(float) * cuentaLoc);
-	h_lat_loc = (float *) malloc(sizeof(float) * cuentaLoc);
-	h_id_loc = (unsigned int *) malloc(sizeof(unsigned int) * cuentaLoc);
-
-	//alojamos memoria para los resultados en el host
-	h_id_rl = (unsigned int*) malloc(sizeof(unsigned int) * cuentaLoc);
-	h_dist_rl = (float *) malloc(sizeof(float) * cuentaLoc);
-
-	PLocalidad ploc = PLr;
-
-	while (ploc != NULL) {
-
-		*(h_lon_loc + i) = (float) ploc->lon;
-		*(h_lat_loc + i) = (float) ploc->lat;
-		*(h_id_loc + i) = ploc->id_loc;
-		ploc = ploc->Pnext;
-		i++;
-	}
-
-}
 
 void alojaMemoriaCopiaLoc_v2(void) {
 
@@ -175,8 +151,9 @@ void alojaMemoriaCopiaLoc_v2(void) {
 	h_id_rl = (unsigned int*) malloc(sizeof(unsigned int) * cuentaLoc);
 	h_dist_rl = (float *) malloc(sizeof(float) * cuentaLoc);
 
-
-
+	for (i = 0; i < cuentaLoc; i++) {
+		*(h_dist_rl + i) = 100.0f;
+	}
 
 	PLocalidad ploc = PLr;
 
@@ -238,17 +215,6 @@ int cuentaRecTipo(char *stipo) {
 /**
  * @brief Función que libera la memoria asociada a las localidadess y la utilizada en los calculos asi como los resultados
  */
-void liberaMemoriaLoc(void) {
-
-	free(h_lon_loc);
-	free(h_lat_loc);
-	free(h_id_loc);
-
-	//libera memoria local de resultados
-	free(h_id_rl);
-	free(h_dist_rl);
-
-}
 
 void liberaMemoriaLoc_v2(void) {
 
