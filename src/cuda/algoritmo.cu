@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <cuda.h>
 
@@ -84,7 +85,7 @@ int calculoSD(void) {
 	alojaMemoriaCL_D(h_lon_loc, h_lat_loc);
 	alojaMemoriaRes();
 
-	printf("tam PrecM: %d\n",sizeof(RecM));
+	if(BDEP)printf("tam PrecM: %d\n",sizeof(RecM));
 
 	// para cada tipo de recurso se ejecuta un "kernel"
 	PTipoRec pt = PTr;
@@ -133,6 +134,7 @@ int calculoSD(void) {
 
 /**
  * @brief Función que aloja la memoria necesaria para las coordenadas de las localidades, distancia e id del recurso seleccionado
+ * @deprecate
  */
 void alojaMemoriaCopiaLoc(void) {
 
@@ -172,6 +174,9 @@ void alojaMemoriaCopiaLoc_v2(void) {
 	//alojamos memoria para los resultados en el host
 	h_id_rl = (unsigned int*) malloc(sizeof(unsigned int) * cuentaLoc);
 	h_dist_rl = (float *) malloc(sizeof(float) * cuentaLoc);
+
+
+
 
 	PLocalidad ploc = PLr;
 

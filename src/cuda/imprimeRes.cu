@@ -17,7 +17,7 @@ extern unsigned int *h_id_loc;
 
 
 FILE * fh;
-double RT = 6378.39; //radio terrestre en km
+double RT = 6378.39; //radio terrestre promedio en km
 
 
 void abreArchivoSSQL(char * snomarch);
@@ -41,7 +41,7 @@ void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char * stipo) {
 				*(h_dist_rl + i) * RT);
 
 		if(BDEP){
-			//printf("%d %d %f\n",i,*(h_id_rl + i),(double)(*(h_dist_rl + i))*RT);
+		//	printf("%d %d %f\n",i,*(h_id_rl + i),(double)(*(h_dist_rl + i)));
 		}
 	}
 
