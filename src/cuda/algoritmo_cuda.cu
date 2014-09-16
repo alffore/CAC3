@@ -52,10 +52,10 @@ __global__ void calculaDK2(const float *d_lon_loc, const float *d_lat_loc,
 		const unsigned int *d_id_rec, float *d_dist_rl, unsigned int *d_id_rl,
 		const size_t cuentaRecT, const int cuentaLoc);
 
-/*__global__ void calculaDKSM(const float *d_lon_loc, const float *d_lat_loc,
- const float *d_lon_rec, const float *d_lat_rec,
- const unsigned int *d_id_rec, float *d_dist_rl, unsigned int *d_id_rl,
- const size_t cuentaRecT, const int cuentaLoc, const size_t maxall);*/
+__global__ void calculaDKSM(const float *d_lon_loc, const float *d_lat_loc,
+		const float *d_lon_rec, const float *d_lat_rec,
+		const unsigned int *d_id_rec, float *d_dist_rl, unsigned int *d_id_rl,
+		const size_t cuentaRecT, const int cuentaLoc, const size_t maxall);
 
 __device__ float calculaDistancia(float lon0, float lat0, float lon1,
 		float lat1);
@@ -67,24 +67,25 @@ void iniciaCalculo(float *h_dist_rl, unsigned int *h_id_rl,
 		const size_t cuentaRecT) {
 
 	//const int maxThreadsPerBlock = MAX_THREADS_BLOCK;
-	int threads = 64; //maxThreadsPerBlock;
+	int threads = 128; //maxThreadsPerBlock;
 	//int blocks = (cuentaLoc + threads - 1)/ threads;
 	int blocks = MIN(30,(cuentaLoc+threads-1) / threads);
 
-	//int numr_sh=MIN(cuentaRecT,threads);
+	int numr_sh = MIN(cuentaRecT,threads);
 
 	if (BDEP)
 		printf("Threads: %d, Blocks: %d (%d)\n", threads, blocks,
 				(cuentaLoc + threads - 1) / threads);
 
-	calculaDK2<<<blocks, threads>>>(d_lon_loc, d_lat_loc, d_lon_rec, d_lat_rec,
-			d_id_rec, d_dist_rl, d_id_rl, cuentaRecT, cuentaLoc);
+	/*calculaDK2<<<blocks, threads>>>(d_lon_loc, d_lat_loc, d_lon_rec, d_lat_rec,
+	 d_id_rec, d_dist_rl, d_id_rl, cuentaRecT, cuentaLoc);*/
 
 	/*calculaDK<<<blocks, threads>>>(d_lon_loc, d_lat_loc, d_lon_rec, d_lat_rec,
 	 d_id_rec, d_dist_rl, d_id_rl, cuentaRecT, cuentaLoc);*/
 
-	/*calculaDKSM<<<blocks, threads,sizeof(RecM)*numr_sh>>>(d_lon_loc, d_lat_loc, d_lon_rec, d_lat_rec,
-	 d_id_rec, d_dist_rl, d_id_rl, cuentaRecT, cuentaLoc,numr_sh);*/
+	calculaDKSM<<<blocks, threads, sizeof(RecM) * numr_sh>>>(d_lon_loc,
+			d_lat_loc, d_lon_rec, d_lat_rec, d_id_rec, d_dist_rl, d_id_rl,
+			cuentaRecT, cuentaLoc, numr_sh);
 
 	cudaDeviceSynchronize();
 	checkCudaErrors(cudaGetLastError());
@@ -208,15 +209,15 @@ void liberaMemoriaRes(void) {
 
 		/*for (unsigned int i = 1; i < cuentaRecT; i++) {
 
-			float daux = calculaDistancia(*(d_lon_loc + myId),
-					*(d_lat_loc + myId), *(d_lon_rec + i), *(d_lat_rec + i));
+		 float daux = calculaDistancia(*(d_lon_loc + myId),
+		 *(d_lat_loc + myId), *(d_lon_rec + i), *(d_lat_rec + i));
 
-			if (daux < *(d_dist_rl + myId)) {
-				*(d_dist_rl + myId) = daux;
-				*(d_id_rl + myId) = *(d_id_rec + i);
-			}
+		 if (daux < *(d_dist_rl + myId)) {
+		 *(d_dist_rl + myId) = daux;
+		 *(d_id_rl + myId) = *(d_id_rec + i);
+		 }
 
-		}*/
+		 }*/
 		myId += blockDim.x * gridDim.x;
 	}
 
@@ -226,57 +227,56 @@ void liberaMemoriaRes(void) {
  *
  */
 
-/*__global__ void calculaDKSM(const float *d_lon_loc, const float *d_lat_loc,
- const float *d_lon_rec, const float *d_lat_rec,
- const unsigned int *d_id_rec, float *d_dist_rl, unsigned int *d_id_rl,
- const size_t cuentaRecT, const int cuentaLoc, const size_t maxall) {
+__global__ void calculaDKSM(const float *d_lon_loc, const float *d_lat_loc,
+		const float *d_lon_rec, const float *d_lat_rec,
+		const unsigned int *d_id_rec, float *d_dist_rl, unsigned int *d_id_rl,
+		const size_t cuentaRecT, const int cuentaLoc, const size_t maxall) {
 
- int myId = threadIdx.x + blockDim.x * blockIdx.x;
+	int myId = threadIdx.x + blockDim.x * blockIdx.x;
 
- int min_id;
- float min_dist;
- float daux;
+	int min_id;
+	float min_dist;
+	int offset = 0;
+	//float daux;
 
- if (myId > cuentaLoc)
- return;
+	if (myId > cuentaLoc)
+		return;
 
- min_dist = calculaDistancia(*(d_lon_loc + myId), *(d_lat_loc + myId),
- *d_lon_rec, *d_lat_rec);
- min_id = *d_id_rec;
+	min_dist = calculaDistancia(*(d_lon_loc + myId), *(d_lat_loc + myId),
+			*d_lon_rec, *d_lat_rec);
+	min_id = *d_id_rec;
 
- extern __shared__ RecM rec[];
+	extern __shared__ RecM rec[];
 
+	while (offset < cuentaRecT) {
 
+		if (myId < maxall) {
+			rec[myId].lon = *(d_lon_rec + myId + offset);
+			rec[myId].lat = *(d_lat_rec + myId + offset);
+			rec[myId].id = *(d_id_rec + myId + offset);
+		}
+		__syncthreads();
 
+		for (int i = 0; i < maxall; i++) {
 
- if (myId < maxall) {
- rec[myId].lon = *(d_lon_rec +myId );
- rec[myId].lat = *(d_lat_rec + myId );
- rec[myId].id = *(d_id_rec + myId );
- }
- __syncthreads();
+			/*daux = calculaDistancia(*(d_lon_loc + myId), *(d_lat_loc + myId),
+			 rec[i].lon, rec[i].lat);
 
+			 if (min_dist > daux) {
+			 min_dist = daux;
+			 min_id = rec[i].id;
+			 }*/
 
+		}
 
- for (int i = 0; i < maxall; i++) {
+		*(d_dist_rl + myId) = min_dist;
+		*(d_id_rl + myId) = min_id;
 
- daux = calculaDistancia(*(d_lon_loc + myId), *(d_lat_loc + myId),rec[i].lon, rec[i].lat);
+		__syncthreads();
+		offset += MIN(maxall,cuentaRecT-1-offset);
+	}
 
- if (min_dist > daux) {
- min_dist = daux;
- min_id = rec[i].id;
- }
-
- }
-
-
- *(d_dist_rl + myId) = min_dist;
- *(d_id_rl + myId) = min_id;
-
- __syncthreads();
-
- }
- */
+}
 
 /**
  *
