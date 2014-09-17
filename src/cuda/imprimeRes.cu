@@ -56,7 +56,7 @@ PRecurso obtenPRecurso(int id, char* stipo) {
 
 	while (pr != NULL) {
 
-		if (pr->id == id && strcmp(pr->stipo_infra, stipo)) {
+		if (pr->id == id && strcmp(pr->stipo_infra, stipo)==0) {
 			return pr;
 		}
 

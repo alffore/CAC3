@@ -34,13 +34,10 @@ extern int cuentaLoc;
 void alojaMemoriaCLyRes_D(float* h_lon_loc, float* h_lat_loc,
 		float * h_dist_rl);
 void alojaMemoriaCR_D(float* h_lon_rec, float* h_lat_rec,
-		unsigned int *h_id_rec, size_t cuentaRecT);
+		unsigned int *h_id_rec, size_t cuentaRecT, float* h_dist_rl);
 
 void liberaMemoriaCLyRes_D(void);
 void liberaMemoriaCR_D(void);
-
-void iniciaCalculo(float *h_dist_rl, unsigned int *h_id_rl,
-		const size_t cuentaRecT);
 
 void iniciaCalculo_v2(float *h_dist_rl, unsigned int *h_id_rl,
 		const size_t cuentaRecT);
@@ -48,8 +45,7 @@ void iniciaCalculo_v2(float *h_dist_rl, unsigned int *h_id_rl,
 __global__ void calculaDKSM(const float *d_lon_loc, const float *d_lat_loc,
 		const float *d_lon_rec, const float *d_lat_rec,
 		const unsigned int *d_id_rec, float *d_dist_rl, unsigned int *d_id_rl,
-		const size_t cuentaRecT, const int cuentaLoc, const size_t maxall,
-		const size_t offset);
+		const int cuentaLoc, const size_t maxall, const size_t offset);
 
 __device__ float calculaDistancia(float lon0, float lat0, float lon1,
 		float lat1);
@@ -57,37 +53,12 @@ __device__ float calculaDistancia(float lon0, float lat0, float lon1,
 /**
  *
  */
-void iniciaCalculo(float *h_dist_rl, unsigned int *h_id_rl,
-		const size_t cuentaRecT) {
-
-	int threads = 64;
-	int blocks = MIN(30,(cuentaLoc+threads-1) / threads);
-
-	int numr_sh = MIN(cuentaRecT,MAX_PREC);
-
-	if (BDEP)
-		printf("Threads: %d, Blocks: %d (%d), SM(PRECs): %d\n", threads, blocks,
-				(cuentaLoc + threads - 1) / threads, numr_sh);
-
-	calculaDKSM<<<blocks, threads, sizeof(RecM) * numr_sh>>>(d_lon_loc,
-			d_lat_loc, d_lon_rec, d_lat_rec, d_id_rec, d_dist_rl, d_id_rl,
-			cuentaRecT, cuentaLoc, numr_sh, 0);
-
-	cudaDeviceSynchronize();
-	checkCudaErrors(cudaGetLastError());
-
-	//obtiene resultados
-	cudaMemcpy(h_dist_rl, d_dist_rl, sizeof(float) * cuentaLoc,
-			cudaMemcpyDeviceToHost);
-	cudaMemcpy(h_id_rl, d_id_rl, sizeof(unsigned int) * cuentaLoc,
-			cudaMemcpyDeviceToHost);
-}
 
 void iniciaCalculo_v2(float *h_dist_rl, unsigned int *h_id_rl,
 		const size_t cuentaRecT) {
 
 	int threads = THREADS;
-	int blocks = MIN(30,(cuentaLoc+threads-1) / threads);
+	int blocks = MIN(BLOCKS,(cuentaLoc+threads-1) / threads);
 
 	int numr_sh = MIN(cuentaRecT,MAX_PREC);
 
@@ -104,11 +75,11 @@ void iniciaCalculo_v2(float *h_dist_rl, unsigned int *h_id_rl,
 	for (m = 0; m < mod; m++) {
 
 		if (BDEP)
-			printf("Paso: %d\n", m);
+			printf("Paso: %d, offset: %d\n", m, m * numr_sh);
 
 		calculaDKSM<<<blocks, threads, sizeof(RecM) * numr_sh>>>(d_lon_loc,
 				d_lat_loc, d_lon_rec, d_lat_rec, d_id_rec, d_dist_rl, d_id_rl,
-				cuentaRecT, cuentaLoc, numr_sh, m * numr_sh);
+				 cuentaLoc, numr_sh, m * numr_sh);
 
 		cudaDeviceSynchronize();
 		checkCudaErrors(cudaGetLastError());
@@ -117,11 +88,11 @@ void iniciaCalculo_v2(float *h_dist_rl, unsigned int *h_id_rl,
 
 	if (res > 0) {
 		if (BDEP)
-			printf("Paso residuo\n");
+			printf("Paso residuo por %d\n", res);
 
-		calculaDKSM<<<blocks, threads, sizeof(RecM) * numr_sh>>>(d_lon_loc,
+		calculaDKSM<<<blocks, threads, sizeof(RecM) * res>>>(d_lon_loc,
 				d_lat_loc, d_lon_rec, d_lat_rec, d_id_rec, d_dist_rl, d_id_rl,
-				cuentaRecT, cuentaLoc, res, (m + 1) * numr_sh);
+				 cuentaLoc, res, (m + 1) * numr_sh);
 
 		cudaDeviceSynchronize();
 		checkCudaErrors(cudaGetLastError());
@@ -154,16 +125,13 @@ void alojaMemoriaCLyRes_D(float * h_lon_loc, float *h_lat_loc,
 	cudaMemcpy(d_lat_loc, h_lat_loc, sizeof(float) * cuentaLoc,
 			cudaMemcpyHostToDevice);
 
-	//copia de informacion de distancias
-	cudaMemcpy(d_dist_rl, h_dist_rl, sizeof(float) * cuentaLoc,
-			cudaMemcpyHostToDevice);
 }
 
 /**
  *
  */
 void alojaMemoriaCR_D(float * h_lon_rec, float *h_lat_rec,
-		unsigned int *h_id_rec, size_t cuentaRecT) {
+		unsigned int *h_id_rec, size_t cuentaRecT, float* h_dist_rl) {
 
 	cudaMalloc((void**) &d_lon_rec, sizeof(float) * cuentaRecT);
 	cudaMalloc((void**) &d_lat_rec, sizeof(float) * cuentaRecT);
@@ -174,6 +142,15 @@ void alojaMemoriaCR_D(float * h_lon_rec, float *h_lat_rec,
 	cudaMemcpy(d_lat_rec, h_lat_rec, sizeof(float) * cuentaRecT,
 			cudaMemcpyHostToDevice);
 	cudaMemcpy(d_id_rec, h_id_rec, sizeof(unsigned int) * cuentaRecT,
+			cudaMemcpyHostToDevice);
+
+	//incializa las distancias para fijar una lacance maximo a minimizar
+	for (int j = 0; j < cuentaLoc; j++) {
+		*(h_dist_rl + j) = 100.0f;
+	}
+
+	//copia de informacion de distancias
+	cudaMemcpy(d_dist_rl, h_dist_rl, sizeof(float) * cuentaLoc,
 			cudaMemcpyHostToDevice);
 }
 
@@ -205,8 +182,7 @@ void liberaMemoriaCR_D(void) {
 __global__ void calculaDKSM(const float *d_lon_loc, const float *d_lat_loc,
 		const float *d_lon_rec, const float *d_lat_rec,
 		const unsigned int *d_id_rec, float *d_dist_rl, unsigned int *d_id_rl,
-		const size_t cuentaRecT, const int cuentaLoc, const size_t maxall,
-		const size_t offset) {
+		const int cuentaLoc, const size_t maxall, const size_t offset) {
 
 	int myId = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -252,11 +228,11 @@ __global__ void calculaDKSM(const float *d_lon_loc, const float *d_lat_loc,
 /**
  *
  */__device__ float calculaDistancia(float lon0, float lat0, float lon1,
-		 float lat1) {
+		float lat1) {
 
-	 return acosf(
-			 sinf(lat0) * sinf(lat1)
-			 + cosf(lat0) * cosf(lon0) * cosf(lat1) * cosf(lon1)
-			 + cosf(lat0) * sinf(lon0) * cosf(lat1) * sinf(lon1));
+	return acosf(
+			sinf(lat0) * sinf(lat1)
+					+ cosf(lat0) * cosf(lon0) * cosf(lat1) * cosf(lon1)
+					+ cosf(lat0) * sinf(lon0) * cosf(lat1) * sinf(lon1));
 
- }
+}

@@ -40,14 +40,13 @@ extern PTipoRec PTr;
 //funciones de interfaz con GPU
 extern void alojaMemoriaCLyRes_D(float* h_lon_loc, float* h_lat_loc,float* h_dist_rl);
 extern void alojaMemoriaCR_D(float* h_lon_rec, float* h_lat_rec,
-		unsigned int *h_id_rec, size_t cuentaRecT);
+		unsigned int *h_id_rec, size_t cuentaRecT,float* h_dist_rl);
 
 extern void liberaMemoriaCLyRes_D(void);
 extern void liberaMemoriaCR_D(void);
 
 
-extern void iniciaCalculo(float *h_dist_rl, unsigned int *h_id_rl,
-		const size_t cuentaRecT);
+
 
 extern void iniciaCalculo_v2(float *h_dist_rl, unsigned int *h_id_rl,
 		const size_t cuentaRecT);
@@ -99,16 +98,15 @@ int calculoSD(void) {
 		alojaMemoriaCopiaRec(pt->stipo_infra);
 
 		if (BDEP)
-			printf("Tema: %s (%u)\n", pt->stipo_infra, cuentaRecT);
+			printf("\nTema: %s (%u)\n", pt->stipo_infra, cuentaRecT);
 
-		alojaMemoriaCR_D(h_lon_rec, h_lat_rec, h_id_rec, cuentaRecT);
+		alojaMemoriaCR_D(h_lon_rec, h_lat_rec, h_id_rec, cuentaRecT,h_dist_rl);
 
 		//checamos memoria antes de ejecucion de kernel
 		if (BDEP)
 			memoriaGPUUso("memoria antes de kernels");
 
 		//llamada a kernel
-		//iniciaCalculo(h_dist_rl, h_id_rl, cuentaRecT);
 		iniciaCalculo_v2(h_dist_rl, h_id_rl, cuentaRecT);
 
 		//imprime resultados
@@ -154,9 +152,7 @@ void alojaMemoriaCopiaLoc_v2(void) {
 	h_id_rl = (unsigned int*) malloc(sizeof(unsigned int) * cuentaLoc);
 	h_dist_rl = (float *) malloc(sizeof(float) * cuentaLoc);
 
-	for (int j = 0; j < cuentaLoc; j++) {
-		*(h_dist_rl + j) = 5;
-	}
+
 
 	PLocalidad ploc = PLr;
 
