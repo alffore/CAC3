@@ -48,6 +48,8 @@ int recuperaInfoRC(char * sarchivo) {
             pr = insertaR(pr, id, edo_id, mun_id, loc_id, lat, lon, stipo_infra);
         }
 
+        //if(cuentaRec==100)break;
+
     }
     printf("cuentaRec: %d\n", cuentaRec);
     fclose(fh);

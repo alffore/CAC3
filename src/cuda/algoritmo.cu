@@ -19,11 +19,9 @@ float *h_lon_loc = NULL;
 float *h_lat_loc = NULL;
 unsigned int *h_id_loc = NULL;
 
-//coordenadas geograficas de los recursos
+//coordenadas geograficas e id de los recursos
 float *h_lon_rec = NULL;
 float *h_lat_rec = NULL;
-
-//id de los recursos
 unsigned int *h_id_rec = NULL;
 
 //resultados del calculo
@@ -46,6 +44,8 @@ extern void liberaMemoriaCLyRes_D(void);
 extern void liberaMemoriaCR_D(void);
 
 
+//funcion para checar lo correcto de la asignacion
+//extern PRecurso obtenPRecurso(unsigned int id, char* stipo);
 
 
 extern void iniciaCalculo_v2(float *h_dist_rl, unsigned int *h_id_rl,
@@ -94,7 +94,7 @@ int calculoSD(void) {
 
 	abreArchivoSSQL(nombrearchivo);
 	while (pt != NULL) {
-
+//if(strcmp(pt->stipo_infra,"museo_art")==0){
 		alojaMemoriaCopiaRec(pt->stipo_infra);
 
 		if (BDEP)
@@ -103,8 +103,7 @@ int calculoSD(void) {
 		alojaMemoriaCR_D(h_lon_rec, h_lat_rec, h_id_rec, cuentaRecT,h_dist_rl);
 
 		//checamos memoria antes de ejecucion de kernel
-		if (BDEP)
-			memoriaGPUUso("memoria antes de kernels");
+		//if (BDEP)memoriaGPUUso("memoria antes de kernels");
 
 		//llamada a kernel
 		iniciaCalculo_v2(h_dist_rl, h_id_rl, cuentaRecT);
@@ -114,7 +113,7 @@ int calculoSD(void) {
 
 		liberaMemoriaCR_D();
 		liberaMemoriaRec();
-
+//}
 		pt = pt->Pnext;
 	}
 	cierraArchivoSSQL();
@@ -191,6 +190,16 @@ void alojaMemoriaCopiaRec(char *stipo) {
 		}
 		pr = pr->Pnext;
 	}
+
+	//rutina checa
+	/*int jc=cuentaRecT/2;
+
+	PRecurso pc= obtenPRecurso(*(h_id_rec + jc),stipo);
+
+	if(*(h_lon_rec + jc)!=(float)pc->lon || *(h_lat_rec + jc)!=(float)pc->lat ){
+		fprintf(stderr,"Error en copia recursos HOST [cuenta: %d,jc: %d,i max:%d, rec rec:%s, id rec: %d, id sol:%d]\n",cuentaRecT,jc,i,pc->stipo_infra,pc->id,*(h_id_rec + jc));
+	}*/
+
 }
 
 /**

@@ -24,8 +24,8 @@ void abreArchivoSSQL(char * snomarch);
 void cierraArchivoSSQL(void);
 void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char *stipo);
 
-PRecurso obtenPRecurso(int id, char* stipo);
-PLocalidad obtenPLocalidad(int id_loc);
+PRecurso obtenPRecurso(unsigned int id, char* stipo);
+PLocalidad obtenPLocalidad(unsigned int id_loc);
 void insertaDato(PLocalidad ploc, PRecurso pr, double dist);
 
 /**
@@ -41,7 +41,7 @@ void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char * stipo) {
 				*(h_dist_rl + i) * RT);
 
 		if(BDEP){
-		//	printf("%d %d %f\n",i,*(h_id_rl + i),(double)(*(h_dist_rl + i)));
+			printf("objeto: %d, id_rec: %d, rads: %f\n",i,*(h_id_rl + i),(*(h_dist_rl + i)));
 		}
 	}
 
@@ -51,7 +51,7 @@ void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char * stipo) {
 /**
  *
  */
-PRecurso obtenPRecurso(int id, char* stipo) {
+PRecurso obtenPRecurso(unsigned int id, char* stipo) {
 	PRecurso pr = PRr;
 
 	while (pr != NULL) {
@@ -68,7 +68,7 @@ PRecurso obtenPRecurso(int id, char* stipo) {
 /**
  *
  */
-PLocalidad obtenPLocalidad(int id_loc){
+PLocalidad obtenPLocalidad(unsigned int id_loc){
 
 	PLocalidad pl=PLr;
 

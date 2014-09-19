@@ -15,7 +15,7 @@ extern "C" {
 
 #define MAX_THREADS_BLOCK 512
 #define THREADS 64
-#define BLOCKS 30
+#define BLOCKS 1 //30
 #define MAX_PREC 500
 #define BDEP true
 #define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
@@ -54,7 +54,7 @@ typedef struct Localidad {
 
 	struct Localidad * Pnext;
 
-	int id_loc;
+	unsigned int id_loc;
 
 } Localidad;
 
@@ -73,10 +73,10 @@ typedef struct TipoRec {
 typedef TipoRec* PTipoRec;
 
 /**
- * @brief Estructura para
+ * @brief Estructura para el Share Memory en el kernel de calculo
  */
 typedef struct RecM{
-	int id;
+	unsigned int id;
 	float lat;
 	float lon;
 }RecM;
