@@ -42,11 +42,7 @@ void liberaMemoriaCR_D(void);
 void iniciaCalculo_v2(float *h_dist_rl, unsigned int *h_id_rl,
 		const size_t cuentaRecT);
 
-/*__global__ void calculaDKSM(const float *d_lon_loc, const float *d_lat_loc,
- const float *d_lon_rec, const float *d_lat_rec,
- const unsigned int *d_id_rec, float *d_dist_rl, unsigned int *d_id_rl,
- const int cuentaLoc, const size_t maxall, const size_t offset);
- */
+
 
 __global__ void calculaDKSM_v2(const float *d_lon_loc, const float *d_lat_loc,
 		const float *d_lon_rec, const float *d_lat_rec,
@@ -185,51 +181,6 @@ void iniciaCalculo_v2(float *h_dist_rl, unsigned int *h_id_rl,
  *
  */
 
-/*__global__ void calculaDKSM(const float *d_lon_loc, const float *d_lat_loc,
- const float *d_lon_rec, const float *d_lat_rec,
- const unsigned int *d_id_rec, float *d_dist_rl, unsigned int *d_id_rl,
- const int cuentaLoc, const size_t maxall, const size_t offset) {
-
- int myId = threadIdx.x + blockDim.x * blockIdx.x;
-
- if (myId > cuentaLoc)
- return;
-
- extern __shared__ RecM rec[];
-
- if (myId < maxall) {
- rec[myId].lon = *(d_lon_rec + myId + offset);
- rec[myId].lat = *(d_lat_rec + myId + offset);
- rec[myId].id = *(d_id_rec + myId + offset);
- }
-
- __syncthreads();
-
- while (myId < cuentaLoc) {
-
- unsigned int min_id= *(d_id_rl + myId);
- float min_dist = *(d_dist_rl + myId);
-
- for (int i = 0; i < maxall; i++) {
-
- float daux = calculaDistancia(*(d_lon_loc + myId), *(d_lat_loc + myId),
- rec[i].lon, rec[i].lat);
-
- if (min_dist > daux) {
- min_dist = daux;
- min_id = rec[i].id;
- }
-
- }
-
- *(d_dist_rl + myId) = min_dist;
- *(d_id_rl + myId) = min_id;
-
- myId += blockDim.x * gridDim.x;
- }
-
- }*/
-
 __global__ void calculaDKSM_v2(const float *d_lon_loc, const float *d_lat_loc,
 		const float *d_lon_rec, const float *d_lat_rec,
 		const unsigned int *d_id_rec, float *d_dist_rl, unsigned int *d_id_rl,
@@ -242,14 +193,16 @@ __global__ void calculaDKSM_v2(const float *d_lon_loc, const float *d_lat_loc,
 
 	extern __shared__ RecM rec[];
 
+	int i;
+
 	/*if (myId < maxall) {
-	 rec[myId].lon = *(d_lon_rec + myId + offset);
-	 rec[myId].lat = *(d_lat_rec + myId + offset);
-	 rec[myId].id = *(d_id_rec + myId + offset);
-	 }*/
+		 rec[myId].lon = *(d_lon_rec + myId + offset);
+		 rec[myId].lat = *(d_lat_rec + myId + offset);
+		 rec[myId].id = *(d_id_rec + myId + offset);
+		 }*/
 
 	if (myId == 0) {
-		for (int i = 0; i < maxall; i++) {
+		for ( i = 0; i < maxall; i++) {
 			rec[i].lon = *(d_lon_rec + i + offset);
 			rec[i].lat = *(d_lat_rec + i + offset);
 			rec[i].id = *(d_id_rec + i + offset);
@@ -260,7 +213,7 @@ __global__ void calculaDKSM_v2(const float *d_lon_loc, const float *d_lat_loc,
 
 	while (myId < cuentaLoc) {
 
-		for (int i = 0; i < maxall; i++) {
+		for ( i = 0; i < maxall; i++) {
 
 			float daux = calculaDistancia(*(d_lon_loc + myId),
 					*(d_lat_loc + myId), rec[i].lon, rec[i].lat);

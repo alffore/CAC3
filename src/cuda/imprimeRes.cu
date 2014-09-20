@@ -41,7 +41,7 @@ void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char * stipo) {
 				*(h_dist_rl + i) * RT);
 
 		if(BDEP){
-			printf("objeto: %d, id_rec: %d, rads: %f\n",i,*(h_id_rl + i),(*(h_dist_rl + i)));
+			//printf("objeto: %d, id_rec: %d, rads: %f\n",i,*(h_id_rl + i),(*(h_dist_rl + i)));
 		}
 	}
 
