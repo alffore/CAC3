@@ -26,7 +26,7 @@ DIR_SRC=./cuda/
 DIR_BIN=./bin/
 
 
-all: clean $(OBJ) 
+all: $(OBJ) 
 	$(NVCC) -link -o $(DIR_BIN)cuda_cac4.exe $(OBJ)  $(NVCC_OPTS)
 
 

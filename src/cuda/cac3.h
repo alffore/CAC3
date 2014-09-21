@@ -17,6 +17,7 @@ extern "C" {
 #define THREADS 128 //64
 #define BLOCKS 1 //30
 #define MAX_PREC 300 //500
+#define MAX_LOCS 100
 #define BDEP true
 #define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
 

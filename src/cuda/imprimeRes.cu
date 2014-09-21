@@ -20,7 +20,7 @@ FILE * fh;
 const double RT = 6378.39; //radio terrestre promedio en km
 
 
-void abreArchivoSSQL(char * snomarch);
+void abreArchivoSSQL(const char * snomarch);
 void cierraArchivoSSQL(void);
 void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char *stipo);
 
@@ -41,7 +41,7 @@ void insertaRes(float *h_dist_rl, unsigned int *h_id_rl, char * stipo) {
 				*(h_dist_rl + i) * RT);
 
 		if(BDEP){
-			//printf("objeto: %d, id_rec: %d, rads: %f\n",i,*(h_id_rl + i),(*(h_dist_rl + i)));
+			printf("objeto: %d, id_rec: %d, rads: %f\n",i,*(h_id_rl + i),(*(h_dist_rl + i)));
 		}
 	}
 
@@ -87,7 +87,7 @@ PLocalidad obtenPLocalidad(unsigned int id_loc){
  *
  * @param snomarch
  */
-void abreArchivoSSQL(char * snomarch) {
+void abreArchivoSSQL(const char * snomarch) {
 	fh = fopen(snomarch, "w");
 }
 
