@@ -26,7 +26,7 @@ int insertaDatoDB(PLocalidad ploc, PRecurso pr, double dist) {
 
 	char squery[1000];
 
-        sprintf(squery, "INSERT INTO cac3 (estado_id,municipio_id,localidad_id,recurso,pobtot,dist,estadod_id,municipiod_id,localidadd_id,recurso_id) VALUES (%d,%d,%d,'%s',%d,%7.5lf,%d,%d,%d,%d);\n"
+        sprintf(squery, "INSERT INTO cac5 (estado_id,municipio_id,localidad_id,recurso,pobtot,dist,estadod_id,municipiod_id,localidadd_id,recurso_id) VALUES (%d,%d,%d,'%s',%d,%7.5lf,%d,%d,%d,%d);\n"
 		    , ploc->estado_id, ploc->municipio_id, ploc->localidad_id,pr->stipo_infra, ploc->poblacion, dist, pr->estado_id, pr->municipio_id, pr->localidad_id, pr->id);
 
 	return insertaQuery(squery);
@@ -56,7 +56,7 @@ int insertaQuery(char* squery){
 }
 
 /**
- * @breif Funcion que abre una conexion a la BD
+ * @brief Funci√n que abre una conexi√≥n a la BD
  *
  *
  */
