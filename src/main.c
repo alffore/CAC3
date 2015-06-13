@@ -57,25 +57,27 @@ int main(int argc, char** argv) {
         	abreArchivoSSQL("salida_cac3.sql");
         	calculoSD(SALIDA_ARCHIVO);
         	cierraArchivoSSQL();
-	}
+	    }
 	
-	if(strcmp(*(argv + 3),SALIDA_BD)==0){
-	        abreConexion();
-		calculoSD(SALIDA_BD);
-		cierraConexion();
-	}
+	    if(strcmp(*(argv + 3),SALIDA_BD)==0){
+	          abreConexion();
+		      calculoSD(SALIDA_BD);
+		      cierraConexion();
+	    }
 
+        if(strcmp(*(argv + 3),SALIDA_MIN)==0){
+            abreArchivoSSQL("salida_min.txt");
+		      calculoSD(SALIDA_MIN);
+		      cierraArchivoSSQL();
+        }
 
-
-
-                
         liberaL(PLr);
         liberaT(PTr);
         liberaR(PRr);
         
       
     } else {
-        fprintf(stderr, "CAC3.exe  <archivo_localidades> <archivo_recursos> <archivo=a>|<BD=b>\n");
+        fprintf(stderr, "CAC3.exe  <archivo_localidades> <archivo_recursos> <archivo=a>|<BD=b>|<minima=m>\n");
     }
 
 

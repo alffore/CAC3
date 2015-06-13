@@ -70,6 +70,7 @@ extern "C" {
 
 #define SALIDA_BD "b"
 
+#define SALIDA_MIN "m"
 
 #ifdef	__cplusplus
 }

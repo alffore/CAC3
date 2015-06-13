@@ -10,6 +10,7 @@ int calculoSD(char *saltipo);
 extern double distLR(PLocalidad ploc, PRecurso prec);
 extern void insertaDato(PLocalidad ploc, PRecurso pr, double dist);
 extern int insertaDatoDB(PLocalidad ploc, PRecurso pr, double dist);
+extern void insertaDatoMin(PLocalidad ploc, PRecurso pr, double dist);
 
 
 extern int cuentaLoc;
@@ -61,9 +62,11 @@ int calculoSD(char *saltipo) {
             }
 
 		if(strcmp(saltipo,SALIDA_ARCHIVO)==0){
-            		insertaDato(ploc, prmin, dist);
-	    	}else if(strcmp(saltipo,SALIDA_BD)==0){
-			insertaDatoDB(ploc, prmin, dist);
+            	insertaDato(ploc, prmin, dist);
+	    }else if(strcmp(saltipo,SALIDA_BD)==0){
+			    insertaDatoDB(ploc, prmin, dist);
+		}else if(strcmp(saltipo,SALIDA_MIN)==0){
+			    insertaDatoMin(ploc, prmin, dist);
 		}
 
             ptr=ptr->Pnext;
