@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
 	    }
 
         if(strcmp(*(argv + 3),SALIDA_MIN)==0){
-            abreArchivoSSQL("salida_min.txt");
+              abreArchivoSSQL("salida_min.txt");
 		      calculoSD(SALIDA_MIN);
 		      cierraArchivoSSQL();
         }
