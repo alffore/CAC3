@@ -49,7 +49,6 @@ int calculoSD(char *saltipo) {
             daux=dist;
             while (pr != NULL) {
              
-
                 if (strcmp(ptr->stipo, pr->stipo_infra) == 0) {
 
                     daux = distLR(ploc, pr);
