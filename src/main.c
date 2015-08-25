@@ -1,6 +1,6 @@
 /**
  * @file  main.c
- * @author AAFR
+ * @author AAFR <alffore@gmail.com>
  *
  * Created on November 19, 2012, 1:36 PM
  */
@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
         recuperaT();
         
         if(strcmp(*(argv + 3),SALIDA_ARCHIVO)==0){
-        	abreArchivoSSQL("salida_cac3.sql");
+        	abreArchivoSSQL("salida_cac5.sql");
         	calculoSD(SALIDA_ARCHIVO);
         	cierraArchivoSSQL();
 	    }

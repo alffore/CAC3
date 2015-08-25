@@ -108,7 +108,7 @@ PRecurso creaR(int id, int estado_id, int municipio_id, int localidad_id, double
 }
 
 /**
- * 
+ * @brief Función que libera los recursos
  * @param pr
  */
 void liberaR(PRecurso pr) {
