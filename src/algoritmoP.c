@@ -60,13 +60,13 @@ int calculoSD(char *saltipo) {
                 pr = pr->Pnext;
             }
 
-		if(strcmp(saltipo,SALIDA_ARCHIVO)==0){
-            	insertaDato(ploc, prmin, dist);
-	    }else if(strcmp(saltipo,SALIDA_BD)==0){
-			    insertaDatoDB(ploc, prmin, dist);
-		}else if(strcmp(saltipo,SALIDA_MIN)==0){
-			    insertaDatoMin(ploc, prmin, dist);
-		}
+    		if(strcmp(saltipo,SALIDA_ARCHIVO)==0){
+                	insertaDato(ploc, prmin, dist);
+    	    }else if(strcmp(saltipo,SALIDA_BD)==0){
+    			    insertaDatoDB(ploc, prmin, dist);
+    		}else if(strcmp(saltipo,SALIDA_MIN)==0){
+    			    insertaDatoMin(ploc, prmin, dist);
+    		}
 
             ptr=ptr->Pnext;
 
