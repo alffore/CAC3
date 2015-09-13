@@ -4,7 +4,9 @@
 #include <math.h>
 #include <string.h>
 
-
+/**
+* @brief Función que realiza la conjunción de la localidad con el tipo de recurso más cercano
+*/
 int calculoSD(char *saltipo);
 
 extern double distLR(PLocalidad ploc, PRecurso prec);
@@ -23,10 +25,7 @@ extern PTipoRec PTr;
 
 extern double RT;
 
-/**
- * @brief Esta función calcula la distancia entre una localidad y un recurso de un cierto tipo
- * @return 
- */
+
 int calculoSD(char *saltipo) {
 
 

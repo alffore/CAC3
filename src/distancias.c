@@ -17,6 +17,7 @@ double RT = 6378390.00;
 
 /**
  * @brief Distancia entre 2 puntos sobre la superficie terrestre y en linea geodesica (radianes)
+ 
  * @param p1 Primer punto
  * @param p2 Segundo Punto
  * @return 
