@@ -25,7 +25,9 @@ extern PTipoRec PTr;
 
 extern double RT;
 
-
+/**
+*
+*/
 int calculoSD(char *saltipo) {
 
 
@@ -55,6 +57,7 @@ int calculoSD(char *saltipo) {
                         dist = daux;
                         prmin = pr;
                     }
+                    
                 }
                 pr = pr->Pnext;
             }

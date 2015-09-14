@@ -56,7 +56,7 @@ int insertaQuery(char* squery){
 }
 
 /**
- * @brief Funcion que abre una conexion a la BD
+ * @brief Función que abre una conexión a la BD
  *
  *
  */
