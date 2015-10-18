@@ -51,13 +51,14 @@ int calculoSD(char *saltipo) {
             while (pr != NULL) {
              
                 if (strcmp(ptr->stipo, pr->stipo_infra) == 0) {
-
+                                        
                     daux = distLR(ploc, pr);
                     if (daux < dist) {
                         dist = daux;
                         prmin = pr;
                     }
-                    
+                    printf("Tipo: %s\n Localidad: $i %i %i ::: Recurso: %i ::: Distancia: %f ::: D. min:dist\n",ptr->stipo,
+                        ploc->estado_id, ploc->municipio_id,ploc->localidad_id,pr->id,daux,dist);
                 }
                 pr = pr->Pnext;
             }
