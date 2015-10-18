@@ -32,6 +32,8 @@ double dist(Recurso p1, Recurso p2){
     
     daux+=cos(p1.lat)*sin(p1.lon)*cos(p2.lat)*sin(p2.lon);
     
+    daux=(daux>1)?1:(daux<-1)?-1:daux;
+    
     daux=RT*acos(daux);
     
     return daux;
